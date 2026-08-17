@@ -1,0 +1,58 @@
+# ═══════════════════════════════════════════════════════════════════════════
+# شاطر — بناء iOS سحابيًا ورفعه TestFlight (بلا جهاز ماك)
+#
+# منسوخ من إعداد رويا **الشغّال المجرَّب** بعد تقليمه: لا widget extension
+# ولا ffmpeg ولا notification service — الغلاف WebView خالص.
+#
+# يعتمد على نفس تهيئة Codemagic الموجودة عند فارس من رويا:
+#   - integration «ROYA ASC Key»  (مفتاح App Store Connect — يخدم كل تطبيقات الحساب)
+#   - group «appstore»            (فيها CERTIFICATE_PRIVATE_KEY)
+# فلا شيء جديد يُضبط — نفس المفاتيح تبني شاطر.
+#
+# ⚠️ درس رويا: رقم الإصدار من pubspec.yaml — لا يُثبَّت هنا أبدًا
+#    (آبل رفضت الرفع حين كان مثبّتًا: «الإصدار مقفول للبلدات الجديدة»).
+# ═══════════════════════════════════════════════════════════════════════════
+workflows:
+  ios-release:
+    name: SHATER iOS Release
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+    environment:
+      flutter: stable
+      xcode: latest
+      cocoapods: default
+      groups:
+        - appstore
+    integrations:
+      app_store_connect: ROYA ASC Key
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $HOME/Library/Caches/CocoaPods
+        - ios/Pods
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: Install CocoaPods
+        script: find . -name "Podfile" -execdir pod install \;
+      - name: Fetch or create signing files
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "com.shater.app" \
+            --type IOS_APP_STORE --create
+          keychain add-certificates
+      - name: Set up signing
+        script: xcode-project use-profiles
+      - name: Build IPA
+        script: |
+          flutter build ipa --release \
+            --build-number=$PROJECT_BUILD_NUMBER \
+            --export-options-plist=/Users/builder/export_options.plist
+    artifacts:
+      - build/ios/ipa/*.ipa
+    publishing:
+      app_store_connect:
+        auth: integration
+        # بلا إرسال لمراجعة خارجية — يوصل الاختبار الداخلي فورًا
+        # (نفس قرار رويا ٣١ يوليو: فارس يختبر بنفسه، والمراجعة الخارجية
+        #  كانت تفشل بـ«Another build is in review»)
