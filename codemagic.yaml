@@ -1,16 +1,16 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # شاطر — بناء iOS سحابيًا ورفعه TestFlight (بلا جهاز ماك)
 #
-# منسوخ من إعداد رويا **الشغّال المجرَّب** بعد تقليمه: لا widget extension
-# ولا ffmpeg ولا notification service — الغلاف WebView خالص.
+# ⚠️ نسخة ٢ — التوقيع المُدار (ios_signing):
+# النسخة الأولى نسخت طريقة رويا اليدوية (keychain + fetch-signing-files)
+# وتحتاج لصق CERTIFICATE_PRIVATE_KEY في واجهة كودماجيك — وتعثّرت مرتين
+# لأن السر لا يصل. التوقيع المُدار يجعل كودماجيك ينشئ الشهادات والملفات
+# بنفسه من ربط App Store Connect الموجود — **صفر أسرار تُلصق يدويًا**.
 #
-# يعتمد على نفس تهيئة Codemagic الموجودة عند فارس من رويا:
-#   - integration «ROYA ASC Key»  (مفتاح App Store Connect — يخدم كل تطبيقات الحساب)
-#   - group «appstore»            (فيها CERTIFICATE_PRIVATE_KEY)
-# فلا شيء جديد يُضبط — نفس المفاتيح تبني شاطر.
+# يبقى المطلوب الوحيد من الواجهة: integration «ROYA ASC Key» (موجود من رويا
+# ويخدم كل تطبيقات الحساب).
 #
-# ⚠️ درس رويا: رقم الإصدار من pubspec.yaml — لا يُثبَّت هنا أبدًا
-#    (آبل رفضت الرفع حين كان مثبّتًا: «الإصدار مقفول للبلدات الجديدة»).
+# درس رويا الباقي: رقم الإصدار من pubspec.yaml — لا يُثبَّت هنا أبدًا.
 # ═══════════════════════════════════════════════════════════════════════════
 workflows:
   ios-release:
@@ -18,11 +18,12 @@ workflows:
     instance_type: mac_mini_m2
     max_build_duration: 45
     environment:
+      ios_signing:
+        distribution_type: app_store
+        bundle_identifier: com.shater.app
       flutter: stable
       xcode: latest
       cocoapods: default
-      groups:
-        - appstore
     integrations:
       app_store_connect: ROYA ASC Key
     cache:
@@ -35,24 +36,6 @@ workflows:
         script: flutter pub get
       - name: Install CocoaPods
         script: find . -name "Podfile" -execdir pod install \;
-      - name: فحص المفتاح قبل التوقيع
-        script: |
-          # يفشل برسالة واضحة بدل رسالة كودماجيك الغامضة — بلا كشف أي سر
-          if [ -z "$CERTIFICATE_PRIVATE_KEY" ]; then
-            echo "❌ المتغير CERTIFICATE_PRIVATE_KEY ما وصل البناء."
-            echo "   تحقق في تبويب Environment variables لتطبيق shater-app:"
-            echo "   ١) اسم المتغير حرفيًا: CERTIFICATE_PRIVATE_KEY"
-            echo "   ٢) اسم المجموعة حرفيًا: appstore (أحرف صغيرة، كلمة واحدة)"
-            echo "   ٣) ضغطت زر Add بعد التعبئة والمتغير ظاهر بالقائمة"
-            exit 1
-          fi
-          echo "✅ المفتاح موجود (${#CERTIFICATE_PRIVATE_KEY} حرفًا)"
-      - name: Fetch or create signing files
-        script: |
-          keychain initialize
-          app-store-connect fetch-signing-files "com.shater.app" \
-            --type IOS_APP_STORE --create
-          keychain add-certificates
       - name: Set up signing
         script: xcode-project use-profiles
       - name: Build IPA
@@ -66,5 +49,4 @@ workflows:
       app_store_connect:
         auth: integration
         # بلا إرسال لمراجعة خارجية — يوصل الاختبار الداخلي فورًا
-        # (نفس قرار رويا ٣١ يوليو: فارس يختبر بنفسه، والمراجعة الخارجية
-        #  كانت تفشل بـ«Another build is in review»)
+        # (قرار رويا ٣١ يوليو: فارس يختبر بنفسه)
