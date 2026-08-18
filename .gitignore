@@ -43,3 +43,7 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# مفتاح شهادة التوقيع — لا يُرفع أبدًا
+shater_cert_key
+shater_cert_key.pub
