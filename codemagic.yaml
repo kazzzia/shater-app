@@ -32,6 +32,18 @@ workflows:
         - $HOME/Library/Caches/CocoaPods
         - ios/Pods
     scripts:
+      - name: تشخيص التوقيع — اقرأ هذا القسم من السجل
+        script: |
+          echo "════════ تشخيص التوقيع ════════"
+          echo "— شهادات التوزيع الموجودة في حساب آبل:"
+          app-store-connect certificates list --type IOS_DISTRIBUTION 2>&1 | head -40 || true
+          app-store-connect certificates list --type DISTRIBUTION 2>&1 | head -40 || true
+          echo "— المعرفات المسجلة المطابقة:"
+          app-store-connect bundle-ids list --bundle-id-identifier com.shater.app 2>&1 | head -20 || true
+          echo "— ملفات التوقيع التي جلبها النظام المُدار:"
+          ls -la ~/Library/MobileDevice/"Provisioning Profiles"/ 2>/dev/null || echo "  (لا شيء)"
+          ls -la ~/Library/MobileDevice/Certificates/ 2>/dev/null || echo "  (لا شهادات)"
+          echo "════════ نهاية التشخيص ════════"
       - name: Get Flutter packages
         script: flutter pub get
       - name: Install CocoaPods
