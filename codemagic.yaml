@@ -13,6 +13,27 @@
 # درس رويا الباقي: رقم الإصدار من pubspec.yaml — لا يُثبَّت هنا أبدًا.
 # ═══════════════════════════════════════════════════════════════════════════
 workflows:
+  # ═══ مسار تشخيص فقط — بلا توقيع فلا يموت قبل البداية ═══
+  diagnose:
+    name: تشخيص فقط — لا بناء
+    instance_type: mac_mini_m2
+    max_build_duration: 10
+    integrations:
+      app_store_connect: ROYA ASC Key
+    scripts:
+      - name: اسأل آبل عن الشهادات والمعرفات
+        script: |
+          echo "════════ تشخيص ════════"
+          echo "— شهادات Apple Distribution:"
+          app-store-connect certificates list --type DISTRIBUTION 2>&1 | head -60 || true
+          echo "— شهادات iOS Distribution (النوع الأقدم):"
+          app-store-connect certificates list --type IOS_DISTRIBUTION 2>&1 | head -60 || true
+          echo "— المعرف com.shater.app:"
+          app-store-connect bundle-ids list --bundle-id-identifier com.shater.app 2>&1 | head -25 || true
+          echo "— ملفات التوقيع الموجودة للمعرف:"
+          app-store-connect profiles list 2>&1 | head -60 || true
+          echo "════════ نهاية التشخيص ════════"
+
   ios-release:
     name: SHATER iOS Release
     instance_type: mac_mini_m2
