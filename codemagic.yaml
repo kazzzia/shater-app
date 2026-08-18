@@ -1,14 +1,15 @@
 # ═══════════════════════════════════════════════════════════════════════════
 # شاطر — بناء iOS سحابيًا ورفعه TestFlight (بلا جهاز ماك)
 #
-# ⚠️ نسخة ٢ — التوقيع المُدار (ios_signing):
-# النسخة الأولى نسخت طريقة رويا اليدوية (keychain + fetch-signing-files)
-# وتحتاج لصق CERTIFICATE_PRIVATE_KEY في واجهة كودماجيك — وتعثّرت مرتين
-# لأن السر لا يصل. التوقيع المُدار يجعل كودماجيك ينشئ الشهادات والملفات
-# بنفسه من ربط App Store Connect الموجود — **صفر أسرار تُلصق يدويًا**.
+# ⚠️ نسخة ٣ — العودة لطريقة رويا اليدوية المجرَّبة على هذا الحساب نفسه:
+# جرّبنا التوقيع «المُدار» (ios_signing) فتبيّن أنه لا ينشئ ملف توقيع
+# لمعرّف جديد ويفشل قبل أول خطوة. التشخيص الحي أكّد: شهادة توزيع واحدة
+# فقط بالحساب (فيه مكان لثانية)، والمعرّف مسجّل، والناقص ملف توقيع شاطر —
+# وfetch-signing-files --create ينشئه أكيد (هي التي بنت رويا للمتجر).
 #
-# يبقى المطلوب الوحيد من الواجهة: integration «ROYA ASC Key» (موجود من رويا
-# ويخدم كل تطبيقات الحساب).
+# المطلوب من الواجهة مرة واحدة:
+#   مجموعة appstore فيها CERTIFICATE_PRIVATE_KEY (مفتاح إنشاء الشهادة)
+#   وخطوة «فحص المفتاح» توقف مبكرًا برسالة عربية إن لم يصل.
 #
 # درس رويا الباقي: رقم الإصدار من pubspec.yaml — لا يُثبَّت هنا أبدًا.
 # ═══════════════════════════════════════════════════════════════════════════
@@ -26,12 +27,10 @@ workflows:
           echo "════════ تشخيص ════════"
           echo "— شهادات Apple Distribution:"
           app-store-connect certificates list --type DISTRIBUTION 2>&1 | head -60 || true
-          echo "— شهادات iOS Distribution (النوع الأقدم):"
-          app-store-connect certificates list --type IOS_DISTRIBUTION 2>&1 | head -60 || true
           echo "— المعرف com.shater.app:"
           app-store-connect bundle-ids list --bundle-id-identifier com.shater.app 2>&1 | head -25 || true
-          echo "— ملفات التوقيع الموجودة للمعرف:"
-          app-store-connect profiles list 2>&1 | head -60 || true
+          echo "— ملفات التوقيع الموجودة:"
+          app-store-connect profiles list 2>&1 | head -80 || true
           echo "════════ نهاية التشخيص ════════"
 
   ios-release:
@@ -39,9 +38,8 @@ workflows:
     instance_type: mac_mini_m2
     max_build_duration: 45
     environment:
-      ios_signing:
-        distribution_type: app_store
-        bundle_identifier: com.shater.app
+      groups:
+        - appstore   # فيها CERTIFICATE_PRIVATE_KEY — تُضاف مرة من الواجهة
       flutter: stable
       xcode: latest
       cocoapods: default
@@ -53,22 +51,25 @@ workflows:
         - $HOME/Library/Caches/CocoaPods
         - ios/Pods
     scripts:
-      - name: تشخيص التوقيع — اقرأ هذا القسم من السجل
+      - name: فحص المفتاح قبل التوقيع
         script: |
-          echo "════════ تشخيص التوقيع ════════"
-          echo "— شهادات التوزيع الموجودة في حساب آبل:"
-          app-store-connect certificates list --type IOS_DISTRIBUTION 2>&1 | head -40 || true
-          app-store-connect certificates list --type DISTRIBUTION 2>&1 | head -40 || true
-          echo "— المعرفات المسجلة المطابقة:"
-          app-store-connect bundle-ids list --bundle-id-identifier com.shater.app 2>&1 | head -20 || true
-          echo "— ملفات التوقيع التي جلبها النظام المُدار:"
-          ls -la ~/Library/MobileDevice/"Provisioning Profiles"/ 2>/dev/null || echo "  (لا شيء)"
-          ls -la ~/Library/MobileDevice/Certificates/ 2>/dev/null || echo "  (لا شهادات)"
-          echo "════════ نهاية التشخيص ════════"
+          if [ -z "$CERTIFICATE_PRIVATE_KEY" ]; then
+            echo "❌ المتغير CERTIFICATE_PRIVATE_KEY ما وصل البناء."
+            echo "   تبويب Environment variables لتطبيق shater-app:"
+            echo "   الاسم حرفيًا CERTIFICATE_PRIVATE_KEY · المجموعة حرفيًا appstore · اضغط Add"
+            exit 1
+          fi
+          echo "✅ المفتاح موجود (${#CERTIFICATE_PRIVATE_KEY} حرفًا)"
       - name: Get Flutter packages
         script: flutter pub get
       - name: Install CocoaPods
         script: find . -name "Podfile" -execdir pod install \;
+      - name: Fetch or create signing files
+        script: |
+          keychain initialize
+          app-store-connect fetch-signing-files "com.shater.app" \
+            --type IOS_APP_STORE --create
+          keychain add-certificates
       - name: Set up signing
         script: xcode-project use-profiles
       - name: Build IPA
