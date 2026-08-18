@@ -39,6 +39,7 @@ dependencies:
   webview_flutter: ^4.9.0
   webview_flutter_wkwebview: ^3.16.0
   webview_flutter_android: ^4.1.0
+  speech_to_text: ^7.4.0
 
 dev_dependencies:
   flutter_test:

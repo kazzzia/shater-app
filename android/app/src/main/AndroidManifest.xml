@@ -1,4 +1,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- الإنترنت: الغلاف كله ويب فيو — بلاها نسخة release ما تفتح الموقع أصلًا -->
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <!-- المايك: التسميع اللحظي (speech_to_text لا يضيفها بنفسه — تحققنا من manifest الحزمة) + تسجيل الويب فيو -->
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
         android:label="shater_app"
         android:name="${applicationName}"
@@ -40,6 +44,10 @@
         <intent>
             <action android:name="android.intent.action.PROCESS_TEXT"/>
             <data android:mimeType="text/plain"/>
+        </intent>
+        <!-- أندرويد ١١+ ما يشوف خدمة التعرف على الكلام بلا هذا الإعلان -->
+        <intent>
+            <action android:name="android.speech.RecognitionService"/>
         </intent>
     </queries>
 </manifest>

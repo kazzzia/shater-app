@@ -66,5 +66,9 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>نحتاج المايك عشان نسمع تسميع طفلك وأسئلته الصوتية</string>
+	<key>NSSpeechRecognitionUsageDescription</key>
+	<string>نحتاج إذن التعرف على الكلام عشان نتابع تسميع طفلك كلمة بكلمة ونصحح له أول بأول</string>
 </dict>
 </plist>

@@ -9,9 +9,11 @@
 // بلاهما صوت مريم لا يشتغل تلقائيًا داخل WebView على iOS، وهو قلب المنتج.
 // ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
+import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
@@ -55,6 +57,103 @@ window.addEventListener('error',function(e){try{ShaterErr.postMessage((e.message
 window.addEventListener('unhandledrejection',function(e){try{ShaterErr.postMessage('promise: '+(e.reason&&e.reason.message?e.reason.message:e.reason))}catch(_){}});
 }''';
 
+  // ═══ جسر التسميع اللحظي (ShaterSTT) ═══
+  // قناة ShaterSTT تنشئ window.ShaterSTT.postMessage تلقائيًا — هنا نكمّلها
+  // بواجهة startLive/stopLive التي يكتشفها الموقع (recite.js) فيقدّم الجسر
+  // على Web Speech المعطوب داخل الغلاف (WebKit bug 239816).
+  static const String _sttHook = '''
+if(window.ShaterSTT&&!window.ShaterSTT.startLive){
+window.ShaterSTT.startLive=function(){window.ShaterSTT.postMessage('start');};
+window.ShaterSTT.stopLive=function(){window.ShaterSTT.postMessage('stop');};
+}''';
+
+  // التعرف اللحظي الأصلي — نتائجه الجزئية تُبث للموقع أولًا بأول
+  final stt.SpeechToText _stt = stt.SpeechToText();
+  bool _sttReady = false;
+  String? _sttLocale;
+
+  // تنفيذ JS داخل الويب فيو بأمان — أعطال الجسر لا تُسقط التطبيق أبدًا
+  void _sttJs(String js) {
+    _web.runJavaScript(js).catchError((_) {});
+  }
+
+  // كل نتيجة جزئية → window.__shaterSttPartial(نص، نهائي؟)
+  // jsonEncode يحوّل النص لعبارة JS سليمة مهما كان فيه (عربي/أقواس/أسطر)
+  void _sttPartial(String text, bool isFinal) {
+    _sttJs('if(window.__shaterSttPartial)window.__shaterSttPartial('
+        '${jsonEncode(text)},$isFinal);');
+  }
+
+  Future<void> _sttStart() async {
+    try {
+      if (!_sttReady) {
+        _sttReady = await _stt.initialize(
+          onError: (e) {
+            final msg = e.errorMsg;
+            // «ما فيه كلام» نهاية طبيعية للجلسة لا عطل — الموقع يحكم بما سمع
+            if (msg.contains('no_match') || msg.contains('speech_timeout')) {
+              _sttJs('if(window.__shaterSttEnd)window.__shaterSttEnd();');
+            } else {
+              _sttJs('if(window.__shaterSttError)window.__shaterSttError('
+                  '${jsonEncode(msg)});');
+            }
+          },
+          onStatus: (s) {
+            if (s == 'done' || s == 'notListening') {
+              _sttJs('if(window.__shaterSttEnd)window.__shaterSttEnd();');
+            }
+          },
+        );
+      }
+      if (!_sttReady) {
+        _sttJs("if(window.__shaterSttError)window.__shaterSttError('stt-unavailable');");
+        return;
+      }
+      // العربية السعودية إن وُجدت، وإلا أي عربية متاحة بالجهاز
+      if (_sttLocale == null) {
+        String pick = 'ar-SA';
+        final locales = await _stt.locales();
+        var found = false;
+        for (final l in locales) {
+          if (l.localeId.replaceAll('_', '-').toLowerCase().startsWith('ar-sa')) {
+            pick = l.localeId;
+            found = true;
+            break;
+          }
+        }
+        if (!found) {
+          for (final l in locales) {
+            if (l.localeId.toLowerCase().startsWith('ar')) {
+              pick = l.localeId;
+              break;
+            }
+          }
+        }
+        _sttLocale = pick;
+      }
+      await _stt.listen(
+        onResult: (r) => _sttPartial(r.recognizedWords, r.finalResult),
+        listenOptions: stt.SpeechListenOptions(
+          localeId: _sttLocale,
+          partialResults: true,
+          listenMode: stt.ListenMode.dictation,
+          pauseFor: const Duration(seconds: 5),
+          listenFor: const Duration(seconds: 75),
+          cancelOnError: true,
+        ),
+      );
+    } catch (e) {
+      _sttJs('if(window.__shaterSttError)window.__shaterSttError('
+          '${jsonEncode(e.toString())});');
+    }
+  }
+
+  void _sttStop() {
+    try {
+      _stt.stop();
+    } catch (_) {}
+  }
+
   @override
   void initState() {
     super.initState();
@@ -88,6 +187,14 @@ window.addEventListener('unhandledrejection',function(e){try{ShaterErr.postMessa
       ..setBackgroundColor(const Color(0xFF150A2E)) // خلفية شاطر — لا وميض أبيض
       ..addJavaScriptChannel('ShaterErr',
           onMessageReceived: (m) => setState(() => _jsErr = m.message))
+      // جسر التسميع اللحظي: الموقع يرسل start/stop ونحن نبث النتائج الجزئية له
+      ..addJavaScriptChannel('ShaterSTT', onMessageReceived: (m) {
+        if (m.message == 'start') {
+          _sttStart();
+        } else if (m.message == 'stop') {
+          _sttStop();
+        }
+      })
       ..setNavigationDelegate(NavigationDelegate(
         onPageStarted: (_) {
           _watchdog?.cancel();
@@ -101,6 +208,7 @@ window.addEventListener('unhandledrejection',function(e){try{ShaterErr.postMessa
         onPageFinished: (_) {
           _watchdog?.cancel();
           _web.runJavaScript(_errHook);
+          _web.runJavaScript(_sttHook);
           setState(() => _loading = false);
         },
         onWebResourceError: (e) {
@@ -117,6 +225,7 @@ window.addEventListener('unhandledrejection',function(e){try{ShaterErr.postMessa
   @override
   void dispose() {
     _watchdog?.cancel();
+    _sttStop();
     super.dispose();
   }
 
