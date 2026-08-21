@@ -84,3 +84,32 @@ workflows:
         auth: integration
         # بلا إرسال لمراجعة خارجية — يوصل الاختبار الداخلي فورًا
         # (قرار رويا ٣١ يوليو: فارس يختبر بنفسه)
+
+  # ═══ أندرويد: نسخة APK مباشرة على الجوال (بلا متجر وبلا توقيع نشر) ═══
+  # الهدف: فارس يجرّبها فوراً — يحمّل الملف من كودماجيك ويثبّته.
+  # التوقيع النهائي (Play Store) خطوة لاحقة تحتاج keystore.
+  android-apk:
+    name: SHATER أندرويد (APK للتجربة)
+    instance_type: linux_x2
+    max_build_duration: 30
+    environment:
+      flutter: stable
+      java: 17
+    cache:
+      cache_paths:
+        - $HOME/.pub-cache
+        - $HOME/.gradle/caches
+    scripts:
+      - name: Get Flutter packages
+        script: flutter pub get
+      - name: بناء APK
+        script: |
+          flutter build apk --release \
+            --build-number=$PROJECT_BUILD_NUMBER
+      - name: تحقق من الملف
+        script: |
+          ls -la build/app/outputs/flutter-apk/
+          echo "════ الحجم ════"
+          du -h build/app/outputs/flutter-apk/app-release.apk || true
+    artifacts:
+      - build/app/outputs/flutter-apk/*.apk
