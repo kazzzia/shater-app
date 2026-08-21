@@ -18,7 +18,7 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-const String kHome = 'https://shater-web.vercel.app/hub';
+const String kHome = 'https://shater-web.vercel.app/';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
