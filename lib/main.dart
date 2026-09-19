@@ -1,7 +1,7 @@
 // ═══════════════════════════════════════════════════════════════════════════
-// شاطر — غلاف iOS/أندرويد للموقع (WebView)
+// شطارة — غلاف iOS/أندرويد للموقع (WebView)
 //
-// كل المنتج يعيش في shater-web.vercel.app — هذا الغلاف نافذة له فقط.
+// كل المنتج يعيش في shatarah.sa — هذا الغلاف نافذة له فقط.
 // الفائدة: أيقونة بالمتجر + TestFlight، وأي نشرة ويب توصل فورًا بلا بناء.
 //
 // ⚠️ أهم سطرين في الملف كله: تشغيل الصوت بلا لمسة من المستخدم
@@ -10,7 +10,9 @@
 // ═══════════════════════════════════════════════════════════════════════════
 import 'dart:async';
 import 'dart:convert';
+import 'dart:io' show Platform;
 
+import 'package:flutter/foundation.dart' show kDebugMode;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
@@ -18,7 +20,8 @@ import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
-const String kHome = 'https://shater-web.vercel.app/';
+// ?native=ios|android: الموقع يعرف أنه داخل التطبيق (دفع المتاجر · إخفاء ما لا يُسمح به داخل التطبيقات)
+final String kHome = 'https://shatarah.sa/app?native=${Platform.isIOS ? 'ios' : 'android'}';
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,7 +33,7 @@ class ShaterApp extends StatelessWidget {
   const ShaterApp({super.key});
   @override
   Widget build(BuildContext context) => const MaterialApp(
-        title: 'شاطر',
+        title: 'شطارة',
         debugShowCheckedModeBanner: false,
         home: ShaterShell(),
       );
@@ -184,7 +187,7 @@ window.ShaterSTT.stopLive=function(){window.ShaterSTT.postMessage('stop');};
     }
     _web
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0xFF150A2E)) // خلفية شاطر — لا وميض أبيض
+      ..setBackgroundColor(const Color(0xFFF7EFE9)) // خلفية شاطر — لا وميض أبيض
       ..addJavaScriptChannel('ShaterErr',
           onMessageReceived: (m) => setState(() => _jsErr = m.message))
       // جسر التسميع اللحظي: الموقع يرسل start/stop ونحن نبث النتائج الجزئية له
@@ -232,18 +235,18 @@ window.ShaterSTT.stopLive=function(){window.ShaterSTT.postMessage('stop');};
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFF150A2E),
+      backgroundColor: const Color(0xFFF7EFE9),
       // شاشة كاملة بلا أي شريط علوي — الموقع يمتد تحت النتش
       // (viewport-fit=cover موجود في الموقع ويتكفل بمسافات الأمان)
       body: Stack(children: [
           WebViewWidget(controller: _web),
           if (_loading)
             const Center(
-              child: CircularProgressIndicator(color: Color(0xFFFFD24A)),
+              child: CircularProgressIndicator(color: Color(0xFFFF6F1E)),
             ),
           if (_offline)
             Container(
-              color: const Color(0xFF150A2E),
+              color: const Color(0xFFF7EFE9),
               alignment: Alignment.center,
               padding: const EdgeInsets.all(28),
               child: Directionality(
@@ -253,17 +256,17 @@ window.ShaterSTT.stopLive=function(){window.ShaterSTT.postMessage('stop');};
                   const SizedBox(height: 12),
                   const Text('ما قدرنا نفتح الصفحة',
                       style: TextStyle(
-                          color: Colors.white,
+                          color: Color(0xFF2B1A07),
                           fontSize: 19,
                           fontWeight: FontWeight.bold)),
                   const SizedBox(height: 6),
                   const Text('تأكد من الإنترنت وجرّب مرة ثانية',
-                      style: TextStyle(color: Colors.white70, fontSize: 14)),
+                      style: TextStyle(color: Color(0xFF7A6A58), fontSize: 14)),
                   const SizedBox(height: 20),
                   FilledButton(
                     style: FilledButton.styleFrom(
-                        backgroundColor: const Color(0xFFFFD24A),
-                        foregroundColor: const Color(0xFF150A2E),
+                        backgroundColor: const Color(0xFFFF6F1E),
+                        foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(
                             horizontal: 34, vertical: 14)),
                     onPressed: () => _web.reload(),
@@ -275,7 +278,8 @@ window.ShaterSTT.stopLive=function(){window.ShaterSTT.postMessage('stop');};
               ),
             ),
           // شريط خطأ صغير أسفل الشاشة — يساعد على تصوير المشكلة وإرسالها
-          if (_jsErr != null)
+          // شريط الأخطاء للتطوير فقط — لا يراه المستخدم ولا مراجع المتجر (الأعطال تصل Sentry)
+          if (_jsErr != null && kDebugMode)
             Positioned(
               left: 8,
               right: 8,

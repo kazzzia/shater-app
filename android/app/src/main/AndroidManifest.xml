@@ -4,7 +4,7 @@
     <!-- المايك: التسميع اللحظي (speech_to_text لا يضيفها بنفسه — تحققنا من manifest الحزمة) + تسجيل الويب فيو -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <application
-        android:label="shater_app"
+        android:label="شطارة"
         android:name="${applicationName}"
         android:icon="@mipmap/ic_launcher">
         <activity
