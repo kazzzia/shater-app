@@ -30,7 +30,15 @@ final String kHome = 'https://shatarah.sa/app?native=${Platform.isIOS ? 'ios' : 
 
 // 🍎 معرّفات منتجات الاشتراك — نفسها في App Store Connect وGoogle Play.
 // أي منتج جديد يُضاف هنا وفي api/_iap.js (PRODUCTS) معًا، وإلا رفضه الخادم.
-const Set<String> kProductIds = {'sa.shatarah.monthly', 'sa.shatarah.yearly'};
+// طفلٌ واحد بلا رقم (كما أُنشئ أول مرة)، ثم ٢..٥ بالرقم — نفس ما في
+// api/_iap.js (PRODUCTS) وapp.html (iapPid). يفحص التطابقَ check_iap.js.
+const Set<String> kProductIds = {
+  'sa.shatarah.monthly', 'sa.shatarah.yearly',
+  'sa.shatarah.monthly2', 'sa.shatarah.yearly2',
+  'sa.shatarah.monthly3', 'sa.shatarah.yearly3',
+  'sa.shatarah.monthly4', 'sa.shatarah.yearly4',
+  'sa.shatarah.monthly5', 'sa.shatarah.yearly5',
+};
 
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
