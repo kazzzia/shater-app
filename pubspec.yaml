@@ -40,6 +40,15 @@ dependencies:
   webview_flutter_wkwebview: ^3.16.0
   webview_flutter_android: ^4.1.0
   speech_to_text: ^7.4.0
+  # 🍎🤖 دفع المتجرين — شرطُ نشرٍ لا خيار: آبل (3.1.1) وجوجل تمنعان أي دفعٍ
+  # خارجيّ لاشتراكٍ رقميّ داخل التطبيق. الشراء هنا، والتحقّق على خادمنا.
+  in_app_purchase: ^3.2.0
+  in_app_purchase_storekit: ^0.4.0
+  in_app_purchase_android: ^0.4.0
+  # 🔔 إشعارات مجدولة على الجهاز — تعمل والتطبيق مقفل وبلا خادم دفع ولا مفاتيح.
+  # (تذكير مذاكرة الطفل · تنبيه الأهل المسائي · موعد الاختبار)
+  flutter_local_notifications: ^18.0.1
+  timezone: ^0.10.0
 
 dev_dependencies:
   flutter_test:

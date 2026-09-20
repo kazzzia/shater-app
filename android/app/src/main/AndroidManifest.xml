@@ -3,6 +3,9 @@
     <uses-permission android:name="android.permission.INTERNET"/>
     <!-- المايك: التسميع اللحظي (speech_to_text لا يضيفها بنفسه — تحققنا من manifest الحزمة) + تسجيل الويب فيو -->
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <!-- 🤖 فوترة Play: حزمة in_app_purchase_android لا تُعلنها في manifestها (تحققنا)،
+         وبلا هذا السطر يرمي BillingClient خطأ «الخدمة غير متاحة» عند أول شراء. -->
+    <uses-permission android:name="com.android.vending.BILLING"/>
     <application
         android:label="شطارة"
         android:name="${applicationName}"
