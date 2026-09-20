@@ -473,9 +473,22 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
     super.dispose();
   }
 
+  // 🔙 زر الرجوع في أندرويد: بلا هذا يخرج من التطبيق من أول ضغطة حتى لو كان
+  // داخل صفحةٍ فرعية (الدعم · الخصوصية) — وهو عيبٌ يلاحظه مراجع Play فورًا،
+  // ويغيظ المستخدم يوميًّا. iOS عنده سحبةُ الحافة فلا يحتاج شيئًا.
+  Future<void> _onPop(bool didPop, Object? _) async {
+    if (didPop) return;
+    if (await _web.canGoBack()) { await _web.goBack(); return; }
+    // لا صفحة سابقة: نخرج فعلاً
+    if (mounted) Navigator.of(context).maybePop();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return PopScope(
+      canPop: false,
+      onPopInvokedWithResult: _onPop,
+      child: Scaffold(
       backgroundColor: const Color(0xFFF7EFE9),
       // شاشة كاملة بلا أي شريط علوي — الموقع يمتد تحت النتش
       // (viewport-fit=cover موجود في الموقع ويتكفل بمسافات الأمان)
@@ -551,6 +564,7 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
               ),
             ),
       ]),
+    ),
     );
   }
 }
