@@ -21,6 +21,11 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
+        // 🍬 حزمة الإشعارات المجدولة تستعمل واجهات التاريخ الحديثة (java.time)،
+        // وأجهزة أندرويد القديمة لا تعرفها — فيرفض البناء بلا هذا السطر:
+        //   «Dependency ':flutter_local_notifications' requires core library desugaring»
+        // اصطيد ببناء AAB محليًّا قبل رفعه إلى Play.
+        isCoreLibraryDesugaringEnabled = true
     }
 
     defaultConfig {
@@ -56,6 +61,10 @@ kotlin {
     compilerOptions {
         jvmTarget = org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_17
     }
+}
+
+dependencies {
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.5")
 }
 
 flutter {
