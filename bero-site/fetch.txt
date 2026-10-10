@@ -8,3 +8,5 @@ hair-frizzy.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVS
 hair-smooth.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_075114_6439ab82-0b5f-4a7f-808b-0095154f8d2c.png
 transform.mp4 https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_075333_3259d960-e307-4d1e-8021-f396c4b28718.mp4
 steps-sheet.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_105308_a40ce1e7-6b69-4517-89ef-223ef475b214.png
+tabby-logo.svg https://cdn.tabby.ai/assets/logo.svg
+tamara-logo.svg https://cdn.prod.website-files.com/67c184892f7a84b971ff49d9/68931b49f2808979578bdc64_tamara-text-logo-black-en.svg
