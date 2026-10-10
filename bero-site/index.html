@@ -3,481 +3,316 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>BERO · معالج ومنعم الشعر</title>
-<meta name="description" content="معالج بيرو يوقف التساقط ويهدّي النفشة لأكثر من 6 شهور، ومنعم بيرو للشعر شديد الخشونة. شوفي العبوة 3D واطلبي الآن.">
-<meta name="theme-color" content="#7a1238">
+<title>BERO · وداعًا للنفشة</title>
+<meta name="description" content="معالج ومنعم الشعر من بيرو. نعومة تدوم أكثر من 6 شهور.">
+<meta name="theme-color" content="#f6f1ee">
 <meta name="color-scheme" content="light only">
 <meta name="supported-color-schemes" content="light">
-<meta property="og:title" content="BERO · معالج التساقط والنفشة">
-<meta property="og:description" content="يوقف التساقط، يهدّي النفشة، ويعطي نعومة وحيوية طبيعية لأكثر من 6 شهور.">
+<meta property="og:title" content="BERO · وداعًا للنفشة">
+<meta property="og:description" content="نعومة تدوم أكثر من 6 شهور.">
 <meta property="og:image" content="assets/duo.webp">
 <link rel="icon" href="assets/icon.png">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;800&family=Poiret+One&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@200;300;400;500;600&family=Poiret+One&display=swap">
 <script type="importmap">{"imports":{"three":"https://cdn.jsdelivr.net/npm/three@0.169.0/build/three.module.js","three/addons/":"https://cdn.jsdelivr.net/npm/three@0.169.0/examples/jsm/"}}</script>
 <style>
-/* صفحة متجر بسيطة وواضحة بألوان ملصقات بيرو: أبيض دافئ، نبيذي المعالج، بنفسجي المنعّم، ووردي فاتح */
+/* أسلوب دار تجميل معاصرة: مساحات واسعة، كلام قليل، صور كبيرة، لون واحد مميّز (نبيذي) على أبيض دافئ وحبر شبه أسود */
 :root{
-  --bg:#fffaf8; --surface:#ffffff; --blush:#fbefea; --blush-2:#f6ddd4; --line:#efdfd8;
-  --ink:#2b1a20; --muted:#76656b;
-  --wine:#7a1238; --wine-dark:#5a1530; --rose:#c9907a;
-  --plum:#491558; --plum-soft:#f3edf7;
-  --font:"Tajawal","Segoe UI",Tahoma,sans-serif; --logo:"Poiret One","Century Gothic",sans-serif;
-  --r:16px; --pill:999px;
+  --paper:#f6f1ee; --paper-2:#efe6e1; --white:#fff; --ink:#1b1416; --soft:#6f6266; --hair:#e3d8d3;
+  --wine:#7a1238; --wine-deep:#5a1530; --rose:#e8cfc6; --lilac:#e6def0; --plum:#491558;
+  --font:"Readex Pro","Segoe UI",Tahoma,sans-serif; --logo:"Poiret One","Century Gothic",sans-serif;
   color-scheme:light only;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--font);font-size:17px;line-height:1.7;overflow-x:hidden}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%;scroll-behavior:smooth}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font);font-weight:300;font-size:16px;line-height:1.6;overflow-x:hidden}
 img{max-width:100%;height:auto;display:block}
+a{color:inherit;text-decoration:none}
 [hidden]{display:none!important}
-a{color:inherit}
 :focus-visible{outline:2px solid var(--wine);outline-offset:3px}
-.wrap{max-width:1180px;margin:0 auto;padding-inline:max(20px,env(safe-area-inset-left)) max(20px,env(safe-area-inset-right))}
-section{padding-block:clamp(56px,8vw,96px)}
-section[id]{scroll-margin-top:72px}
-h1,h2,h3{margin:0;line-height:1.25;text-wrap:balance}
-h2{font-size:clamp(28px,3.6vw,42px);font-weight:800}
-.kicker{display:inline-block;font-size:14px;font-weight:700;color:var(--wine);background:var(--blush);border-radius:var(--pill);padding:5px 14px;margin-bottom:14px}
-.lead{color:var(--muted);font-size:clamp(17px,1.6vw,19px);margin:12px 0 0;max-width:60ch}
-.center{text-align:center}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border-radius:var(--pill);padding:13px 26px;font:inherit;font-weight:700;font-size:16px;text-decoration:none;cursor:pointer;border:2px solid var(--wine);transition:transform .2s ease,background-color .2s ease,color .2s ease;white-space:nowrap}
-.btn.fill{background:var(--wine);color:#fff}
-.btn.fill:hover{background:var(--wine-dark);border-color:var(--wine-dark)}
-.btn.line{background:transparent;color:var(--wine)}
-.btn.line:hover{background:var(--blush)}
-.btn:active{transform:translateY(1px)}
-.btn svg{width:20px;height:20px;flex:none}
+.wrap{width:100%;max-width:1200px;margin:0 auto;padding-inline:max(22px,env(safe-area-inset-left)) max(22px,env(safe-area-inset-right))}
+.eyebrow{font-size:11px;font-weight:400;letter-spacing:.28em;text-transform:uppercase;color:var(--soft);direction:ltr;unicode-bidi:isolate}
+h1,h2,h3,p{margin:0}
+h2{font-size:clamp(34px,9vw,64px);font-weight:300;line-height:1.1;letter-spacing:-.01em}
+h2 b{font-weight:600}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;height:52px;padding:0 28px;border-radius:999px;font:inherit;font-weight:500;font-size:16px;background:var(--ink);color:#fff;border:0;cursor:pointer;transition:transform .2s,background-color .2s}
+.btn:active{transform:scale(.98)}
+.btn.wine{background:var(--wine)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1px var(--ink)}
+.btn svg{width:20px;height:20px}
+section{position:relative}
+section[id]{scroll-margin-top:64px}
 
-/* ── الترويسة ── */
-.top{position:sticky;top:0;z-index:20;background:color-mix(in srgb,var(--bg) 92%,transparent);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);border-bottom:1px solid var(--line);padding-top:env(safe-area-inset-top)}
-.top .wrap{display:flex;align-items:center;justify-content:space-between;gap:16px;min-height:68px}
-.logo{font-family:var(--logo);font-size:30px;letter-spacing:.18em;color:var(--wine);text-decoration:none;direction:ltr;line-height:1}
-nav.links{display:flex;gap:4px;align-items:center}
-nav.links a{text-decoration:none;font-size:15px;font-weight:500;padding:8px 14px;border-radius:var(--pill);color:var(--muted)}
-nav.links a:hover{color:var(--wine);background:var(--blush)}
-nav.links .btn{padding:9px 20px;font-size:15px;margin-inline-start:8px;color:#fff}
-nav.links .btn:hover{color:#fff;background:var(--wine-dark)}
-@media (max-width:760px){ nav.links a:not(.btn){display:none} }
+/* الترويسة */
+.top{position:fixed;inset-inline:0;top:0;z-index:30;padding-top:env(safe-area-inset-top);transition:background-color .3s,backdrop-filter .3s}
+.top.solid{background:rgba(246,241,238,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px)}
+.top .wrap{display:flex;align-items:center;justify-content:space-between;height:64px}
+.logo{font-family:var(--logo);font-size:26px;letter-spacing:.32em;direction:ltr;color:var(--ink);padding-inline-start:.32em}
+.top .btn{height:40px;padding:0 20px;font-size:14px}
 
-/* ── العرض الافتتاحي: عبوة تتقلّب مع التمرير ثم تنقسم إلى اثنتين ── */
-.show{position:relative;height:420vh;height:420svh;padding:0;background:radial-gradient(120% 80% at 50% 35%,#fff 0%,var(--blush) 55%,var(--blush-2) 100%)}
+/* ١ — العرض الافتتاحي ثلاثي الأبعاد */
+.show{height:400vh;height:400svh;background:linear-gradient(180deg,#f8f3f0 0%,var(--paper-2) 100%)}
 .show .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .show canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.show .fallback{position:absolute;inset:0;margin:auto;width:min(360px,60%);height:auto;top:10%;display:none}
+.show .fallback{position:absolute;inset:0;margin:auto;width:min(300px,56%);display:none}
 .show.nogl .fallback{display:block}
-.intro{position:absolute;inset-inline:0;top:calc(68px + 4vh);text-align:center;padding-inline:20px;pointer-events:none;will-change:opacity,transform}
-.intro h1{font-size:clamp(30px,4.6vw,56px);font-weight:800}
-.intro h1 span{color:var(--wine)}
-.intro p{color:var(--muted);margin:8px auto 0;font-size:clamp(16px,1.6vw,19px)}
-.cue{position:absolute;bottom:calc(18px + env(safe-area-inset-bottom));inset-inline:0;margin:auto;width:max-content;display:flex;flex-direction:column;align-items:center;gap:4px;font-size:13px;color:var(--muted);will-change:opacity}
-.cue svg{animation:bob 1.4s ease-in-out infinite}
-.spec{position:absolute;top:50%;width:min(320px,30vw);translate:0 -50%;opacity:0;will-change:opacity,transform}
-.spec.t{right:max(24px,calc(50% - 600px))}
-.spec.s{left:max(24px,calc(50% - 600px))}
-.spec .tag{display:inline-block;font-size:13px;font-weight:700;border-radius:999px;padding:4px 12px;margin-bottom:8px}
-.spec.t .tag{background:#fff;color:var(--wine)}
-.spec.s .tag{background:#fff;color:var(--plum)}
-.spec h2{font-size:clamp(22px,2.4vw,30px)}
-.spec.t h2{color:var(--wine)}.spec.s h2{color:var(--plum)}
-.spec ul{list-style:none;padding:0;margin:12px 0 0;display:grid;gap:8px}
-.spec li{display:flex;gap:10px;align-items:center;font-weight:500;font-size:16px;background:rgba(255,255,255,.75);border-radius:12px;padding:8px 12px}
-.spec li svg{flex:none;width:20px;height:20px}
-.spec.t li svg{color:var(--wine)}.spec.s li svg{color:var(--plum)}
-.spec .go{display:inline-block;margin-top:12px;font-weight:700;font-size:15px;text-decoration:none}
-.spec.t .go{color:var(--wine)}.spec.s .go{color:var(--plum)}
-@media (max-width:899px){
-  .spec{top:auto;bottom:calc(14px + env(safe-area-inset-bottom));translate:none;width:calc(50% - 22px)}
-  .spec.t{right:14px}.spec.s{left:14px}
-  .spec .tag{font-size:11px;padding:2px 8px;margin-bottom:4px}
-  .spec h2{font-size:16px}
-  .spec ul{gap:4px;margin-top:6px}
-  .spec li{font-size:12.5px;padding:5px 7px;gap:6px;line-height:1.35}
-  .spec li svg{width:14px;height:14px}
-  .spec .go{display:none}
+.intro{position:absolute;inset-inline:0;top:calc(84px + env(safe-area-inset-top));text-align:center;padding-inline:22px;pointer-events:none}
+.intro h1{font-size:clamp(40px,11vw,84px);font-weight:300;line-height:1.05;letter-spacing:-.02em;margin-top:10px}
+.intro h1 b{font-weight:600;color:var(--wine)}
+.intro p{margin-top:10px;color:var(--soft);font-size:16px}
+.cue{position:absolute;bottom:calc(26px + env(safe-area-inset-bottom));left:50%;width:1px;height:44px;background:linear-gradient(var(--ink),transparent);transform-origin:top;animation:cue 2s ease-in-out infinite}
+@keyframes cue{0%{transform:scaleY(0)}50%{transform:scaleY(1)}100%{transform:scaleY(1);opacity:0}}
+.spec{position:absolute;opacity:0;width:min(280px,42vw);bottom:calc(30px + env(safe-area-inset-bottom))}
+.spec.t{right:22px}.spec.s{left:22px}
+.spec h3{font-size:20px;font-weight:500;margin:6px 0 10px}
+.spec.t h3{color:var(--wine)}.spec.s h3{color:var(--plum)}
+.spec ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:6px}
+.spec li{font-size:13px;font-weight:400;background:rgba(255,255,255,.8);border-radius:999px;padding:5px 12px;white-space:nowrap}
+@media (min-width:900px){
+  .spec{top:50%;bottom:auto;translate:0 -50%;width:260px}
+  .spec.t{right:max(40px,calc(50% - 560px))}.spec.s{left:max(40px,calc(50% - 560px))}
+  .spec h3{font-size:26px}
+  .spec li{font-size:14px}
 }
 
-/* ── تحوّل الشعر مع التمرير: الصورة في النص وتتحوّل من قبل إلى بعد ── */
-.morph{position:relative;height:260vh;height:260svh;padding:0;background:var(--blush)}
-.morph .pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;padding:12px}
-.frame{position:relative;width:min(92vw,calc(88svh * 720 / 966),620px);aspect-ratio:720/966;border-radius:22px;overflow:hidden;background:var(--wine-dark);box-shadow:0 24px 60px rgba(90,21,48,.22)}
+/* ٢ — قبل وبعد */
+.morph{height:240vh;height:240svh;background:var(--wine-deep)}
+.morph .pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;padding:64px 0 0}
+.frame{position:relative;width:min(100vw,calc((100svh - 64px) * 720 / 966),640px);aspect-ratio:720/966}
 .frame canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.iron{position:absolute;inset-inline:0;height:3px;top:8%;background:#fff;box-shadow:0 0 16px 4px rgba(255,220,205,.75),0 0 46px 10px rgba(255,200,180,.35);will-change:transform;pointer-events:none}
-.tagb{position:absolute;top:14px;inset-inline-start:14px;font-size:15px;font-weight:800;background:#fff;color:var(--wine);border-radius:var(--pill);padding:5px 16px;box-shadow:0 4px 14px rgba(0,0,0,.12)}
-.frame .cap{position:absolute;inset-inline:0;bottom:0;padding:48px 18px 18px;background:linear-gradient(transparent,rgba(45,8,22,.78));color:#fff;text-align:center}
-.frame .say{display:grid}
-.frame .say > *{grid-area:1/1;transition:opacity .35s,transform .35s}
-.frame .state{margin:0;font-size:clamp(22px,6vw,30px);font-weight:800}
-.morph[data-half="0"] .after,.morph[data-half="1"] .before{opacity:0;transform:translateY(10px)}
-.frame .bar{height:5px;border-radius:5px;background:rgba(255,255,255,.3);margin-top:12px;overflow:hidden}
-.frame .bar i{display:block;height:100%;width:0;background:#fff;border-radius:5px}
+.iron{position:absolute;inset-inline:6%;height:2px;top:8%;background:#fff;box-shadow:0 0 18px 4px rgba(255,214,200,.7),0 0 50px 12px rgba(255,190,170,.3);will-change:transform;pointer-events:none}
+.tagb{position:absolute;top:18px;inset-inline-start:22px;font-size:12px;letter-spacing:.24em;color:#fff;direction:ltr}
+.tagb b{font-weight:500}
+.frame .bar{position:absolute;inset-inline:22px;bottom:22px;height:2px;background:rgba(255,255,255,.25)}
+.frame .bar i{display:block;height:100%;width:0;background:#fff}
 
-/* ── المنتجات ── */
-.product .wrap{display:grid;grid-template-columns:1fr;gap:clamp(28px,4vw,56px);align-items:center}
-@media (min-width:900px){ .product .wrap{grid-template-columns:.95fr 1.05fr} .product.alt .stage3d{order:2} }
-.stage3d{position:relative;aspect-ratio:4/5;max-height:76vh;width:100%;border-radius:24px;background:radial-gradient(circle at 50% 38%,#fff,var(--blush) 70%);overflow:hidden;border:1px solid var(--line)}
-.product.alt .stage3d{background:radial-gradient(circle at 50% 38%,#fff,var(--plum-soft) 70%)}
-@media (max-width:899px){ .stage3d{aspect-ratio:1/1;max-height:none} }
-.stage3d .still{position:absolute;inset:0;margin:auto;height:84%;width:auto;filter:drop-shadow(0 18px 24px rgba(90,21,48,.16))}
-.stage3d .hint{position:absolute;bottom:14px;inset-inline:0;margin:auto;width:max-content;max-width:90%;font-size:13px;font-weight:500;background:#fff;color:var(--muted);border:1px solid var(--line);border-radius:var(--pill);padding:6px 14px;display:flex;gap:8px;align-items:center}
-.stage3d .size{position:absolute;top:14px;inset-inline-start:14px;font-weight:700;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:3px 12px;direction:ltr}
-.product h2 small{display:block;font-size:14px;font-weight:700;letter-spacing:.12em;color:var(--rose);margin-bottom:6px}
-.product.alt .kicker{color:var(--plum);background:var(--plum-soft)}
-.feats{list-style:none;padding:0;margin:22px 0 0;display:grid;gap:10px}
-.feats li{display:flex;gap:12px;align-items:center;font-weight:500;font-size:18px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px 14px}
-.feats svg{flex:none;width:24px;height:24px;color:var(--wine)}
-.product.alt .feats svg{color:var(--plum)}
-.reveal .feats li{transition:transform .6s ease,opacity .6s ease}
-.reveal:not(.in) .feats li{transform:translateY(14px);opacity:.2}
-.reveal .feats li:nth-child(2){transition-delay:.07s}.reveal .feats li:nth-child(3){transition-delay:.14s}.reveal .feats li:nth-child(4){transition-delay:.21s}
-.facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:16px}
-.fact{background:var(--blush);border-radius:12px;padding:12px 8px;text-align:center}
-.product.alt .fact{background:var(--plum-soft)}
-.fact b{display:block;font-size:24px;font-weight:800;color:var(--wine);direction:ltr;unicode-bidi:isolate;line-height:1.3}
-.product.alt .fact b{color:var(--plum)}
-.fact span{font-size:13px;color:var(--muted)}
-.ingr{margin-top:18px;font-size:15px;color:var(--muted)}
-.ingr b{color:var(--ink)}
-.note-line{margin-top:8px;font-size:15px;font-weight:500;color:var(--plum)}
-.product .cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
-.product.alt .btn{border-color:var(--plum)}
-.product.alt .btn.fill{background:var(--plum)}
-.product.alt .btn.fill:hover{background:#35103f;border-color:#35103f}
-.product.alt .btn.line{color:var(--plum)}
-.product.alt .btn.line:hover{background:var(--plum-soft)}
+/* ٣ — المنتجان */
+.duo{padding-block:96px 72px}
+.duo .head{display:flex;flex-direction:column;gap:12px;margin-bottom:36px}
+.cards{display:grid;grid-template-columns:1fr;gap:16px}
+@media (min-width:760px){ .cards{grid-template-columns:1fr 1fr;gap:20px} }
+.card{background:var(--white);border-radius:28px;overflow:hidden;display:flex;flex-direction:column}
+.card .shot{position:relative;aspect-ratio:1/1;display:grid;place-items:center;background:radial-gradient(circle at 50% 42%,#fff 0%,var(--rose) 100%)}
+.card.s .shot{background:radial-gradient(circle at 50% 42%,#fff 0%,var(--lilac) 100%)}
+.card .shot img{position:absolute;inset:0;margin:auto;height:84%;width:auto;max-width:none;filter:drop-shadow(0 22px 26px rgba(60,10,30,.16))}
+.card .info{padding:22px 22px 24px;display:flex;flex-direction:column;gap:6px}
+.card h3{font-size:24px;font-weight:500}
+.card p{color:var(--soft);font-size:15px}
+.card .row{display:flex;align-items:center;justify-content:space-between;margin-top:14px;gap:12px}
+.card .price{font-size:22px;font-weight:500;direction:rtl}
+.card .price s{font-size:15px;color:#a99ca0;font-weight:300;margin-inline-start:6px}
+.card .btn{height:46px;padding:0 22px;font-size:15px}
+.card.s .btn{background:var(--plum)}
 
-/* ── طريقة الاستخدام ── */
-.how{background:var(--surface);border-block:1px solid var(--line)}
-.tabs{display:inline-flex;background:var(--blush);border-radius:var(--pill);padding:4px;gap:4px;margin:22px 0 24px}
-.tabs button{font:inherit;font-weight:700;font-size:15px;border:0;border-radius:var(--pill);padding:9px 22px;background:transparent;color:var(--muted);cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--wine);color:#fff}
-/* دليل مرسوم: بطاقة لكل خطوة برسمة ورقم، وخط منقّط يربطها على الجوال */
-.guide{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:1fr;gap:14px;counter-reset:s;position:relative}
-.guide li{counter-increment:s;position:relative;display:grid;grid-template-columns:112px 1fr;gap:14px;align-items:center;background:#fff;border-radius:20px;padding:10px;box-shadow:0 4px 18px rgba(122,18,56,.07)}
-.guide li:not(:last-child)::after{content:"";position:absolute;inset-inline-start:66px;bottom:-15px;height:16px;border-inline-start:2px dotted var(--rose)}
-.guide img{width:112px;height:112px;border-radius:14px;object-fit:cover}
-.guide li > div{display:flex;flex-direction:column;gap:2px;padding-inline-end:6px}
-.guide b{font-size:18px;font-weight:800;color:var(--wine);display:flex;align-items:center;gap:8px}
-.guide b::before{content:counter(s);flex:none;width:26px;height:26px;border-radius:50%;background:var(--wine);color:#fff;font-size:14px;display:grid;place-items:center}
-.guide span{font-size:15px;color:var(--muted);line-height:1.6}
-#steps-s b{color:var(--plum)} #steps-s b::before{background:var(--plum)}
-@media (min-width:860px){
-  .guide{grid-template-columns:repeat(4,minmax(0,1fr));gap:18px}
-  .guide li{grid-template-columns:1fr;align-items:start;padding:12px 12px 18px}
-  .guide li::after{display:none}
-  .guide img{width:100%;height:auto;aspect-ratio:1}
-}
-.temps{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
-.temp{display:flex;align-items:baseline;gap:8px;background:var(--blush);border-radius:var(--pill);padding:8px 18px;font-size:15px}
-.temp b{font-weight:800;color:var(--wine);direction:ltr;unicode-bidi:isolate}
-.notes{display:grid;grid-template-columns:1fr;gap:12px;margin-top:28px}
-@media (min-width:860px){ .notes{grid-template-columns:repeat(3,minmax(0,1fr))} }
-.note{background:var(--bg);border:1px solid var(--line);border-radius:var(--r);padding:18px 20px}
-.note h3{font-size:18px;font-weight:800;color:var(--wine);margin-bottom:6px}
-.note ul{margin:0;padding-inline-start:18px;font-size:15px;color:var(--muted)}
-.note p{margin:0;font-size:15px;color:var(--muted)}
+/* ٤ — طريقة الاستخدام */
+.how{padding-block:72px 80px;background:var(--white)}
+.how .head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:28px}
+.tabs{display:inline-flex;border-radius:999px;background:var(--paper);padding:4px}
+.tabs button{font:inherit;font-weight:400;font-size:14px;border:0;border-radius:999px;padding:9px 18px;background:transparent;color:var(--soft);cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--ink);color:#fff}
+.rail{display:flex;gap:12px;overflow-x:auto;scroll-snap-type:x mandatory;padding-inline:max(22px,calc((100vw - 1200px) / 2 + 22px));padding-bottom:6px;scrollbar-width:none;list-style:none;margin:0;counter-reset:s}
+.rail::-webkit-scrollbar{display:none}
+.rail li{counter-increment:s;flex:0 0 min(64vw,260px);scroll-snap-align:start;display:flex;flex-direction:column;gap:12px}
+.rail img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:22px}
+.rail b{display:flex;gap:10px;align-items:baseline;font-size:17px;font-weight:500}
+.rail b::before{content:"0" counter(s);font-size:12px;font-weight:400;color:var(--wine);letter-spacing:.1em;direction:ltr}
+#steps-s b::before{color:var(--plum)}
+.rail span{font-size:14px;color:var(--soft);margin-top:-6px}
+.how .more{margin-top:28px;display:flex;flex-direction:column;gap:12px}
+.temps{display:flex;gap:8px;flex-wrap:wrap}
+.temps span{font-size:14px;border-radius:999px;padding:7px 14px;background:var(--paper)}
+.temps b{font-weight:500;direction:ltr;unicode-bidi:isolate}
+details{border-top:1px solid var(--hair);padding-top:14px}
+summary{cursor:pointer;font-weight:500;list-style:none;display:flex;justify-content:space-between;align-items:center}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";font-size:22px;font-weight:200}
+details[open] summary::after{content:"–"}
+details ul{margin:12px 0 0;padding-inline-start:18px;color:var(--soft);font-size:14px;display:grid;gap:4px}
 
-/* ── الطلب ── */
-.order .grid{display:grid;grid-template-columns:1fr;gap:16px;margin-top:28px}
-@media (min-width:860px){ .order .grid{grid-template-columns:1.15fr .85fr} }
-.pcard{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,3vw,32px);display:grid;gap:16px;grid-template-columns:1fr}
-@media (min-width:600px){ .pcard{grid-template-columns:130px 1fr;align-items:center} }
-.pcard img.tube{width:110px;margin-inline:auto}
-.pcard h3{font-size:22px;font-weight:800}
-.pcard .row{display:flex;align-items:baseline;gap:14px;margin-top:6px}
-.pcard .now{font-size:44px;font-weight:800;color:var(--wine);direction:ltr;unicode-bidi:isolate}
-.pcard .now small{font-size:18px}
-.pcard .was{font-size:22px;color:#a8979c;text-decoration:line-through;direction:ltr;unicode-bidi:isolate}
-.bnpl{display:grid;gap:8px;margin-top:12px}
-.bnpl .opt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--blush);border-radius:12px;padding:10px 14px;font-size:15px}
-.bnpl .opt b{font-size:19px;color:var(--wine)}
-.pay-logo{display:inline-grid;place-items:center;background:#fff;border-radius:10px;padding:6px 12px;height:38px;min-width:92px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
-.pay-logo img{height:20px;width:auto}
-.pay-logo.tabby{background:#3effc1}
-/* شريط الدفع بعد العرض الافتتاحي */
-.paystrip{padding-block:18px;background:#fff}
-.paystrip .wrap{display:flex;align-items:center;justify-content:center;gap:12px 16px;flex-wrap:wrap;text-align:center}
-.paystrip p{margin:0;font-weight:700;font-size:16px;color:var(--ink)}
-.paystrip p b{color:var(--wine)}
-.paystrip .logos{display:flex;gap:10px}
-.pcard .btn{margin-top:14px}
-.contact{background:var(--wine);color:#fff;border-radius:24px;padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:12px}
-.contact h3{font-size:22px;font-weight:800}
-.contact .line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:1px solid rgba(255,255,255,.2);padding-bottom:10px;font-size:15px}
-.contact .line span:first-child{opacity:.75}
-.contact .line span:last-child{direction:ltr;unicode-bidi:isolate;font-weight:500;user-select:all;overflow-wrap:anywhere}
-.contact .btn{background:#fff;color:var(--wine);border-color:#fff;align-self:flex-start;margin-top:6px}
+/* ٥ — الطلب */
+.order{padding-block:88px calc(56px + env(safe-area-inset-bottom));background:var(--ink);color:#fff;text-align:center}
+.order .eyebrow{color:rgba(255,255,255,.55)}
+.order h2{margin-top:14px}
+.order .price{margin-top:22px;font-size:clamp(56px,16vw,96px);font-weight:200;line-height:1;letter-spacing:-.02em}
+.order .price small{font-size:.28em;font-weight:300;margin-inline-start:6px}
+.order .was{color:rgba(255,255,255,.45);font-size:16px;margin-top:8px}
+.order .was s{margin-inline:4px}
+.bnpl{display:flex;justify-content:center;align-items:center;gap:10px;margin-top:22px;flex-wrap:wrap;font-size:14px;color:rgba(255,255,255,.75)}
+.pay{display:inline-grid;place-items:center;height:32px;padding:0 12px;border-radius:8px;background:#fff}
+.pay img{height:16px;width:auto}
+.pay.tabby{background:#3effc1}
+.order .btn{margin-top:30px;background:#fff;color:var(--ink);height:56px;padding:0 34px}
+footer{background:var(--ink);color:rgba(255,255,255,.5);font-size:13px;border-top:1px solid rgba(255,255,255,.08)}
+footer .wrap{display:flex;flex-direction:column;align-items:center;gap:6px;padding-block:28px calc(28px + env(safe-area-inset-bottom));text-align:center}
+footer .logo{color:#fff;font-size:22px}
+footer span{direction:ltr;unicode-bidi:isolate;user-select:all}
 
-footer{border-top:1px solid var(--line);padding-block:28px calc(28px + env(safe-area-inset-bottom))}
-footer .wrap{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;font-size:14px;color:var(--muted)}
-footer .logo{font-size:24px}
-
-/* ── ألوان الأقسام: كل قسم له خلفية ملوّنة من لوحة بيرو ── */
-:root{ --nude:#f6dfd6; --nude-2:#ecc7ba; --nude-3:#dcab9c; --mauve:#e9e0f1; --mauve-2:#d8c8e6; --cream:#fbf4ef; --night:#3f0c22 }
-.top{background:rgba(250,234,227,.88);border-bottom-color:rgba(122,18,56,.08)}
-.show{background:radial-gradient(70% 55% at 50% 52%,#fff3ee 0%,var(--nude) 45%,var(--nude-2) 78%,var(--nude-3) 100%)}
-.morph{background:var(--wine-dark)}
-.frame{box-shadow:none}
-.product{background:linear-gradient(180deg,var(--nude) 0%,#fbece6 100%)}
-.product .stage3d{background:radial-gradient(circle at 50% 40%,#fff 0%,#fbeee9 55%,var(--nude-2) 100%);border:0}
-.product .feats li{border-color:transparent;box-shadow:0 2px 10px rgba(122,18,56,.06)}
-.product .fact{background:#fff}
-.product.alt{background:linear-gradient(180deg,var(--mauve) 0%,#f5f0f8 100%)}
-.product.alt .stage3d{background:radial-gradient(circle at 50% 40%,#fff 0%,#f4eff8 55%,var(--mauve-2) 100%)}
-.product.alt .feats li{box-shadow:0 2px 10px rgba(73,21,88,.07)}
-.product.alt .fact{background:#fff}
-.how{background:var(--cream);border:0}
-.how .note{background:#fff;border-color:transparent}
-.order{background:var(--wine);color:#fff}
-.order .kicker{background:rgba(255,255,255,.14);color:#fff}
-.order h2{color:#fff}
-.order .pcard{border:0;color:var(--ink)}
-.order .contact{background:var(--night)}
-footer{background:var(--night);border:0;color:rgba(255,255,255,.7)}
-footer .wrap{color:rgba(255,255,255,.7)}
-footer .logo{color:#f3c9bb}
-
-@media (prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important}
-  html{scroll-behavior:auto}
-}
+@media (prefers-reduced-motion:reduce){ *,*::before,*::after{animation:none!important;transition:none!important} html{scroll-behavior:auto} }
 </style>
 </head>
 <body>
 
-<header class="top">
+<header class="top" id="top">
   <div class="wrap">
     <a class="logo" href="#" aria-label="BERO">BERO</a>
-    <nav class="links" aria-label="أقسام الصفحة">
-      <a href="#treatment">المعالج</a>
-      <a href="#straightener">المنعّم</a>
-      <a href="#how">طريقة الاستخدام</a>
-      <a href="#order" class="btn fill">اطلبي الآن</a>
-    </nav>
+    <a class="btn" href="#order">اطلبي</a>
   </div>
 </header>
 
 <main>
-  <!-- العرض الافتتاحي: يتحرك مع التمرير فقط -->
+  <!-- ١ — المنتج يتقلّب مع التمرير ثم ينقسم لاثنين -->
   <section class="show" id="show" aria-label="عبوات بيرو">
     <div class="pin">
       <canvas id="stage" aria-hidden="true"></canvas>
       <img class="fallback" src="assets/duo.webp" width="903" height="1308" alt="عبوتا بيرو">
       <div class="intro" id="intro">
-        <h1>معالج <span>التساقط والنفشة</span><br>لأكثر من 6 شهور</h1>
-        <p>اسحبي لتحت وتعرّفي على منتجات بيرو</p>
+        <p class="eyebrow">BERO HAIR CARE</p>
+        <h1>وداعًا <b>للنفشة.</b></h1>
+        <p>نعومة تدوم أكثر من 6 شهور</p>
       </div>
       <div class="spec t" id="spec-t">
-        <span class="tag">المعالج</span>
-        <h2>معالج ومنعم للشعر</h2>
-        <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>يوقف التساقط</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>يهدّي النفشة</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>نعومة وحيوية طبيعية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>نتيجة لأكثر من 6 شهور</li>
-        </ul>
-        <a class="go" href="#treatment">التفاصيل ←</a>
+        <p class="eyebrow">TREATMENT</p>
+        <h3>المعالج</h3>
+        <ul><li>يوقف التساقط</li><li>يهدّي النفشة</li><li>+6 شهور</li></ul>
       </div>
       <div class="spec s" id="spec-s">
-        <span class="tag">المنعّم</span>
-        <h2>منعم للشعر شديد الخشونة</h2>
-        <ul>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>نعومة فورية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>لمعة وترطيب</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>بدون سلفات وفورمالديهايد</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>يدوم 10–12 شهر</li>
-        </ul>
-        <a class="go" href="#straightener">التفاصيل ←</a>
+        <p class="eyebrow">STRAIGHTENER</p>
+        <h3>المنعّم</h3>
+        <ul><li>نعومة فورية</li><li>بدون فورمالديهايد</li><li>10–12 شهر</li></ul>
       </div>
-      <div class="cue" id="cue"><span>اسحبي لتحت</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4v16M6 14l6 6 6-6"/></svg></div>
+      <div class="cue" id="cue" aria-hidden="true"></div>
     </div>
   </section>
 
-  <!-- شريط الدفع -->
-  <section class="paystrip" aria-label="طرق الدفع">
-    <div class="wrap">
-      <p>قسّميها على <b>4 دفعات</b> بدون فوائد</p>
-      <div class="logos">
-        <span class="pay-logo tabby"><img src="assets/pay/tabby.svg" width="75" height="32" alt="تابي"></span>
-        <span class="pay-logo"><img src="assets/pay/tamara.svg" width="97" height="19" alt="تمارا"></span>
-      </div>
-    </div>
-  </section>
-
-  <!-- تحوّل الشعر: يتحرك مع التمرير -->
-  <section class="morph" id="morph" data-half="0" aria-label="من شعر مجعّد إلى شعر ناعم">
+  <!-- ٢ — قبل وبعد -->
+  <section class="morph" id="morph" data-half="0" aria-label="الشعر قبل وبعد">
     <div class="pin">
       <div class="frame">
         <canvas id="hair" width="720" height="966" role="img" aria-label="شعر مجعّد يتحوّل إلى شعر ناعم ولامع"></canvas>
         <div class="iron" id="iron" aria-hidden="true"></div>
-        <span class="tagb" id="tagb">قبل</span>
-        <div class="cap">
-          <div class="say">
-            <p class="state before">نفشة وتجعيد وتطاير</p>
-            <p class="state after">ناعم ولمّاع ومرتّب</p>
+        <span class="tagb" id="tagb"><b>BEFORE</b></span>
+        <div class="bar" aria-hidden="true"><i id="bar"></i></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ٣ — المنتجان -->
+  <section class="duo" id="shop">
+    <div class="wrap">
+      <div class="head">
+        <p class="eyebrow">THE COLLECTION</p>
+        <h2>اختاري <b>نعومتك</b></h2>
+      </div>
+      <div class="cards">
+        <article class="card t">
+          <div class="shot"><img src="assets/shot-treatment.webp" width="540" height="1303" alt="عبوة معالج بيرو" loading="lazy"></div>
+          <div class="info">
+            <p class="eyebrow">BERO TREATMENT · 150 ML</p>
+            <h3>معالج ومنعم للشعر</h3>
+            <p>للتساقط والنفشة. بزيت جوز الهند وجنين القمح.</p>
+            <div class="row">
+              <span class="price">300 ر.س<s>450</s></span>
+              <a class="btn wine" data-wa="معالج بيرو" href="https://wa.me/966532677900">اطلبي</a>
+            </div>
           </div>
-          <div class="bar" aria-hidden="true"><i id="bar"></i></div>
-        </div>
+        </article>
+        <article class="card s">
+          <div class="shot"><img src="assets/shot-straightener.webp" width="540" height="1303" alt="عبوة منعم بيرو" loading="lazy"></div>
+          <div class="info">
+            <p class="eyebrow">BERO HAIR STRAIGHTENER · 150 ML</p>
+            <h3>منعم للشعر شديد الخشونة</h3>
+            <p>نعومة ولمعان للشعر الخشن. بزيت المكاديميا والكولاجين.</p>
+            <div class="row">
+              <span class="price">اسألي عن السعر</span>
+              <a class="btn" data-wa="منعم بيرو للشعر شديد الخشونة" href="https://wa.me/966532677900">اطلبي</a>
+            </div>
+          </div>
+        </article>
       </div>
     </div>
   </section>
 
-  <!-- المعالج -->
-  <section class="product reveal" id="treatment">
-    <div class="wrap">
-      <div class="stage3d">
-        <span class="size">150 ml</span>
-        <img class="still" src="assets/shot-treatment.webp" width="540" height="1303" alt="عبوة معالج بيرو" loading="lazy">
-      </div>
-      <div>
-        <span class="kicker">المعالج</span>
-        <h2><small>BERO PROGRESSIVE HAIR TREATMENT</small>معالج ومنعم للشعر</h2>
-        <p class="lead">يساعد على منع التساقط. تركيبة فعّالة بالأحماض الأمينية وبروتين القمح.</p>
-        <ul class="feats">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>تنعيم الشعر نعومة طبيعية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>تقليل التساقط وزيادة كثافة الشعر</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>ترميم الشعر التالف والمحروق</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>شعر سهل التسريح والانسياب</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><b>6+</b><span>شهور</span></div>
-          <div class="fact"><b>150</b><span>مل</span></div>
-          <div class="fact"><b>20–60</b><span>دقيقة على الشعر</span></div>
-        </div>
-        <p class="ingr"><b>يحتوي على:</b> زيت جوز الهند، جنين القمح، زيت بذور العنب، زهرة القادرينا.</p>
-        <div class="cta">
-          <a class="btn fill" data-wa="معالج بيرو" href="https://wa.me/966532677900">اطلبي المعالج</a>
-          <a class="btn line" href="#how" data-tab="t">طريقة الاستخدام</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- المنعّم -->
-  <section class="product alt reveal" id="straightener">
-    <div class="wrap">
-      <div class="stage3d">
-        <span class="size">150 ml</span>
-        <img class="still" src="assets/shot-straightener.webp" width="540" height="1303" alt="عبوة منعم بيرو" loading="lazy">
-      </div>
-      <div>
-        <span class="kicker">المنعّم</span>
-        <h2><small>BERO HAIR STRAIGHTENER</small>منعم للشعر شديد الخشونة</h2>
-        <p class="lead">نعومة عالية، لمعان وترطيب، وتحكّم كامل حتى في أصعب أنواع الشعر.</p>
-        <ul class="feats">
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>تنعيم الشعر نعومة فورية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>تقوية ألياف الشعر وترميم عميق وحماية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>لمعة وحيوية وجاذبية</li>
-          <li><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>شعر سهل التسريح والانسياب</li>
-        </ul>
-        <div class="facts">
-          <div class="fact"><b>10–12</b><span>شهر يدوم</span></div>
-          <div class="fact"><b>150</b><span>مل</span></div>
-          <div class="fact"><b>2</b><span>درجة نعومة</span></div>
-        </div>
-        <p class="ingr"><b>يحتوي على:</b> زيت بذور المكاديميا، بروتين القمح، كولاجين وأحماض أمينية.</p>
-        <p class="note-line">خالي من السلفات والفورمالديهايد، ويختفي بالكامل عند انتهاء مدته بدون أثر فرد.</p>
-        <div class="cta">
-          <a class="btn fill" data-wa="منعم بيرو للشعر شديد الخشونة" href="https://wa.me/966532677900">اطلبي المنعّم</a>
-          <a class="btn line" href="#how" data-tab="s">طريقة الاستخدام</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- طريقة الاستخدام -->
+  <!-- ٤ — طريقة الاستخدام -->
   <section class="how" id="how">
-    <div class="wrap">
-      <h2>طريقة الاستخدام</h2>
+    <div class="wrap head">
+      <h2>طريقة <b>الاستخدام</b></h2>
       <div class="tabs" role="tablist" aria-label="اختاري المنتج">
         <button type="button" role="tab" id="tab-t" aria-selected="true" aria-controls="steps-t">المعالج</button>
         <button type="button" role="tab" id="tab-s" aria-selected="false" aria-controls="steps-s">المنعّم</button>
       </div>
-      <ol class="guide" id="steps-t" role="tabpanel" aria-labelledby="tab-t">
-        <li><img src="assets/steps/s1.webp" width="520" height="520" alt="" loading="lazy"><div><b>اغسلي</b><span>اغسلي الشعر بشامبو تنظيف عميق.</span></div></li>
-        <li><img src="assets/steps/s2.webp" width="520" height="520" alt="" loading="lazy"><div><b>جففي</b><span>50٪ للشعر المصبوغ و100٪ للطبيعي.</span></div></li>
-        <li><img src="assets/steps/s3.webp" width="520" height="520" alt="" loading="lazy"><div><b>وزّعي المنتج</b><span>قسّمي الشعر وضعي المنتج بالفرشاة، بعيد عن فروة الرأس.</span></div></li>
-        <li><img src="assets/steps/s4.webp" width="520" height="520" alt="" loading="lazy"><div><b>مشّطي وانتظري</b><span>20–30 دقيقة للمصبوغ، و50–60 دقيقة للطبيعي.</span></div></li>
-        <li><img src="assets/steps/s5.webp" width="520" height="520" alt="" loading="lazy"><div><b>اشطفي</b><span>بالماء 50٪ فقط، ثم جففي بالهواء الساخن.</span></div></li>
-        <li><img src="assets/steps/s6.webp" width="520" height="520" alt="" loading="lazy"><div><b>المكواة</b><span>مرّري المكواة على كل خصلة 10–15 مرة.</span></div></li>
-        <li><img src="assets/steps/s7.webp" width="520" height="520" alt="" loading="lazy"><div><b>هواء بارد وبلسم</b><span>انهي بالهواء البارد، ثم اغسلي الشعر ببلسم.</span></div></li>
-        <li><img src="assets/steps/s8.webp" width="520" height="520" alt="" loading="lazy"><div><b>النتيجة</b><span>شعر ناعم ولمّاع. كرري العلاج كل 6 شهور.</span></div></li>
-      </ol>
-      <ol class="guide" id="steps-s" role="tabpanel" aria-labelledby="tab-s" hidden>
-        <li><img src="assets/steps/s1.webp" width="520" height="520" alt="" loading="lazy"><div><b>اغسلي</b><span>بشامبو تنظيف عميق، ويُفضّل كلاريفاينغ شامبو.</span></div></li>
-        <li><img src="assets/steps/s2.webp" width="520" height="520" alt="" loading="lazy"><div><b>جففي</b><span>80٪ للشعر المصبوغ و100٪ للطبيعي.</span></div></li>
-        <li><img src="assets/steps/s3.webp" width="520" height="520" alt="" loading="lazy"><div><b>وزّعي المنتج</b><span>قسّمي الشعر وضعي المنتج بالفرشاة، بعيد عن فروة الرأس.</span></div></li>
-        <li><img src="assets/steps/s4.webp" width="520" height="520" alt="" loading="lazy"><div><b>مشّطي وانتظري</b><span>بمشط ضيّق لإزالة الزوائد، ثم 20–30 دقيقة للمصبوغ أو 50–60 للطبيعي.</span></div></li>
-        <li><img src="assets/steps/s5.webp" width="520" height="520" alt="" loading="lazy"><div><b>اختاري النعومة</b><span>متوسطة: اغسلي بالماء 50٪ ثم جففي. فائقة: جففي 100٪ بدون غسل.</span></div></li>
-        <li><img src="assets/steps/s6.webp" width="520" height="520" alt="" loading="lazy"><div><b>مكواة الفرد</b><span>10–15 مرة على كل خصلة لين تصير ليّنة ولمّاعة.</span></div></li>
-        <li><img src="assets/steps/s7.webp" width="520" height="520" alt="" loading="lazy"><div><b>هواء بارد وبلسم</b><span>واستخدمي شامبو خاص بالشعر المفرود.</span></div></li>
-        <li><img src="assets/steps/s8.webp" width="520" height="520" alt="" loading="lazy"><div><b>النتيجة</b><span>نعومة تدوم من 10 إلى 12 شهر.</span></div></li>
-      </ol>
-      <div class="temps" aria-label="حرارة المكواة">
-        <div class="temp"><b>200–230°C</b><span>للشعر الطبيعي</span></div>
-        <div class="temp"><b>150–180°C</b><span>للشعر المصبوغ أو المسامي</span></div>
-      </div>
-      <div class="notes">
-        <div class="note"><h3>نصيحة مهمة</h3><p>استخدمي مكواة سيراميك أو تيتانيوم فقط، ورجّي العبوة قبل الاستخدام. تغيّر اللزوجة طبيعي حسب الطقس.</p></div>
-        <div class="note"><h3>اختبار الخصلة</h3><p>جربي على خصلة صغيرة أول. إذا لاحظتي التفاف الأطراف خلال 20 دقيقة، اشطفي فورًا.</p></div>
-        <div class="note"><h3>التحذيرات</h3><ul><li>للاستعمال الخارجي فقط</li><li>يُحفظ بعيدًا عن متناول الأطفال</li><li>لا يُستخدم على فروة رأس متهيّجة أو جروح</li><li>غير مناسب للأطفال تحت 6 سنوات</li><li>استشيري الطبيب إذا كنتِ حامل أو مرضع</li></ul></div>
-      </div>
+    </div>
+    <ol class="rail" id="steps-t" role="tabpanel" aria-labelledby="tab-t">
+      <li><img src="assets/steps/s1.webp" width="520" height="520" alt="" loading="lazy"><b>اغسلي</b><span>بشامبو تنظيف عميق</span></li>
+      <li><img src="assets/steps/s2.webp" width="520" height="520" alt="" loading="lazy"><b>جففي</b><span>50٪ للمصبوغ، 100٪ للطبيعي</span></li>
+      <li><img src="assets/steps/s3.webp" width="520" height="520" alt="" loading="lazy"><b>وزّعي</b><span>بالفرشاة، بعيد عن فروة الرأس</span></li>
+      <li><img src="assets/steps/s4.webp" width="520" height="520" alt="" loading="lazy"><b>انتظري</b><span>20–30 د للمصبوغ، 50–60 د للطبيعي</span></li>
+      <li><img src="assets/steps/s5.webp" width="520" height="520" alt="" loading="lazy"><b>اشطفي</b><span>بالماء 50٪، ثم جففي</span></li>
+      <li><img src="assets/steps/s6.webp" width="520" height="520" alt="" loading="lazy"><b>المكواة</b><span>10–15 مرة لكل خصلة</span></li>
+      <li><img src="assets/steps/s7.webp" width="520" height="520" alt="" loading="lazy"><b>هواء بارد</b><span>ثم اغسلي ببلسم</span></li>
+      <li><img src="assets/steps/s8.webp" width="520" height="520" alt="" loading="lazy"><b>استمتعي</b><span>وكرري كل 6 شهور</span></li>
+    </ol>
+    <ol class="rail" id="steps-s" role="tabpanel" aria-labelledby="tab-s" hidden>
+      <li><img src="assets/steps/s1.webp" width="520" height="520" alt="" loading="lazy"><b>اغسلي</b><span>بكلاريفاينغ شامبو</span></li>
+      <li><img src="assets/steps/s2.webp" width="520" height="520" alt="" loading="lazy"><b>جففي</b><span>80٪ للمصبوغ، 100٪ للطبيعي</span></li>
+      <li><img src="assets/steps/s3.webp" width="520" height="520" alt="" loading="lazy"><b>وزّعي</b><span>بالفرشاة، بعيد عن فروة الرأس</span></li>
+      <li><img src="assets/steps/s4.webp" width="520" height="520" alt="" loading="lazy"><b>انتظري</b><span>مشط ضيّق، ثم 20–60 دقيقة</span></li>
+      <li><img src="assets/steps/s5.webp" width="520" height="520" alt="" loading="lazy"><b>اختاري</b><span>اشطفي 50٪ لنعومة طبيعية، أو بدون شطف لفرد فائق</span></li>
+      <li><img src="assets/steps/s6.webp" width="520" height="520" alt="" loading="lazy"><b>المكواة</b><span>10–15 مرة لين تلمع الخصلة</span></li>
+      <li><img src="assets/steps/s7.webp" width="520" height="520" alt="" loading="lazy"><b>هواء بارد</b><span>ثم بلسم وشامبو للشعر المفرود</span></li>
+      <li><img src="assets/steps/s8.webp" width="520" height="520" alt="" loading="lazy"><b>استمتعي</b><span>نعومة تدوم 10–12 شهر</span></li>
+    </ol>
+    <div class="wrap more">
+      <div class="temps"><span><b>200–230°C</b> طبيعي</span><span><b>150–180°C</b> مصبوغ</span></div>
+      <details>
+        <summary>نصائح وتحذيرات</summary>
+        <ul>
+          <li>مكواة سيراميك أو تيتانيوم فقط، ورجّي العبوة قبل الاستخدام</li>
+          <li>جربي على خصلة صغيرة أول</li>
+          <li>للاستعمال الخارجي فقط، وبعيدًا عن متناول الأطفال</li>
+          <li>لا يُستخدم على فروة رأس متهيّجة أو جروح</li>
+          <li>غير مناسب للأطفال تحت 6 سنوات، واستشيري الطبيب أثناء الحمل والرضاعة</li>
+        </ul>
+      </details>
     </div>
   </section>
 
-  <!-- الطلب -->
+  <!-- ٥ — الطلب -->
   <section class="order" id="order">
     <div class="wrap">
-      <div class="center">
-        <span class="kicker">العرض الحالي</span>
-        <h2>اطلبي الآن</h2>
+      <p class="eyebrow">BERO TREATMENT</p>
+      <h2>اطلبي <b>الآن</b></h2>
+      <p class="price">300<small>ر.س</small></p>
+      <p class="was">بدل <s>450</s> ر.س</p>
+      <div class="bnpl">
+        <span>أو 4 دفعات × 75 ر.س مع</span>
+        <span class="pay tabby"><img src="assets/pay/tabby.svg" width="75" height="32" alt="تابي"></span>
+        <span class="pay"><img src="assets/pay/tamara.svg" width="97" height="19" alt="تمارا"></span>
       </div>
-      <div class="grid">
-        <div class="pcard">
-          <img class="tube" src="assets/shot-treatment.webp" width="540" height="1303" alt="عبوة معالج بيرو">
-          <div>
-            <h3>معالج بيرو · 150 مل</h3>
-            <div class="row"><span class="now">300 <small>ر.س</small></span><span class="was" aria-label="بدل 450 ريال">450</span></div>
-            <div class="bnpl" aria-label="الدفع بالتقسيط">
-              <div class="opt"><span class="pay-logo tabby"><img src="assets/pay/tabby.svg" width="75" height="32" alt="تابي"></span><span>4 دفعات × <b>75</b> ر.س بدون فوائد</span></div>
-              <div class="opt"><span class="pay-logo"><img src="assets/pay/tamara.svg" width="97" height="19" alt="تمارا"></span><span>4 دفعات × <b>75</b> ر.س بدون فوائد</span></div>
-            </div>
-            <a class="btn fill" data-wa="معالج بيرو" href="https://wa.me/966532677900"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>اطلبي عبر واتساب</a>
-          </div>
-        </div>
-        <div class="contact">
-          <h3>للطلب والاستفسار</h3>
-          <div class="line"><span>واتساب</span><span>+966 532 677 900</span></div>
-          <div class="line"><span>البريد</span><span>Bero.treatment@outlook.sa</span></div>
-          <div class="line"><span>حصريًا لدى</span><span>ABEER ABDULRAHMAN ALSHAHRANI</span></div>
-          <a class="btn" data-wa="منعم بيرو للشعر شديد الخشونة" href="https://wa.me/966532677900">اسألي عن سعر المنعّم</a>
-        </div>
-      </div>
+      <a class="btn" data-wa="معالج بيرو" href="https://wa.me/966532677900"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>اطلبي عبر واتساب</a>
     </div>
   </section>
 </main>
 
 <footer>
-  <div class="wrap"><span class="logo">BERO</span><span>للاستعمال الخارجي فقط</span></div>
+  <div class="wrap">
+    <span class="logo">BERO</span>
+    <span>+966 532 677 900 · Bero.treatment@outlook.sa</span>
+    <span>ABEER ABDULRAHMAN ALSHAHRANI</span>
+  </div>
 </footer>
 
 <script>
 (function () {
   "use strict";
-  /* روابط واتساب برسالة جاهزة */
   document.querySelectorAll("[data-wa]").forEach(function (a) {
     a.href = "https://wa.me/966532677900?text=" + encodeURIComponent("السلام عليكم، أبي أطلب " + a.dataset.wa);
     a.target = "_blank"; a.rel = "noopener";
   });
 
-  /* ظهور المزايا عند الوصول لها */
-  if ("IntersectionObserver" in window) {
-    var rv = new IntersectionObserver(function (es) {
-      es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("in"); rv.unobserve(e.target); } });
-    }, { threshold: .2 });
-    document.querySelectorAll(".reveal").forEach(function (s) { rv.observe(s); });
-  } else document.querySelectorAll(".reveal").forEach(function (s) { s.classList.add("in"); });
+  /* الترويسة تصير ضبابية بعد بداية التمرير */
+  var top = document.getElementById("top");
+  function head() { top.classList.toggle("solid", scrollY > 40); }
 
   /* تبويبات طريقة الاستخدام */
   var tabs = { t: document.getElementById("tab-t"), s: document.getElementById("tab-s") };
@@ -489,27 +324,30 @@ footer .logo{color:#f3c9bb}
   }
   tabs.t.addEventListener("click", function () { show("t"); });
   tabs.s.addEventListener("click", function () { show("s"); });
-  document.querySelectorAll("[data-tab]").forEach(function (a) { a.addEventListener("click", function () { show(a.dataset.tab); }); });
 
-  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-
-  /* ── الشعر: إطارات الفيديو تُرسم حسب موضع التمرير ── */
+  /* قبل وبعد: إطارات الفيديو تُرسم حسب موضع التمرير */
   var N = 61, frames = [], cv = document.getElementById("hair"), ctx = cv.getContext("2d");
   var morph = document.getElementById("morph"), iron = document.getElementById("iron"), bar = document.getElementById("bar");
   var tagb = document.getElementById("tagb"), cur = -1;
   function src(i) { return "assets/hair/f" + String(i + 1).padStart(3, "0") + ".webp"; }
-  function ok(k) { return k >= 0 && k < N && frames[k] && frames[k].complete && frames[k].naturalWidth; }
+  function ok(k) { return k >= 0 && k < N && frames[k] && frames[k]._ready; }
   function draw(i) {
-    for (var d = 0; d < N; d++) {               /* أقرب إطار محمّل */
+    for (var d = 0; d < N; d++) {
       var j = ok(i - d) ? i - d : ok(i + d) ? i + d : -1;
       if (j >= 0) { ctx.drawImage(frames[j], 0, 0, cv.width, cv.height); return; }
     }
   }
-  function load(i) { if (frames[i]) return; var im = new Image(); im.decoding = "async"; im.onload = function () { if (cur < 0 || Math.abs(i - cur) < 3) draw(cur < 0 ? 0 : cur); }; im.src = src(i); frames[i] = im; }
+  function load(i) {
+    if (frames[i]) return; var im = new Image(); im.decoding = "async"; frames[i] = im;
+    /* فك ترميز الصورة في الخلفية قبل رسمها حتى لا يتقطّع التمرير */
+    function ready() { im._ready = true; if (cur < 0 || Math.abs(i - cur) < 3) draw(cur < 0 ? 0 : cur); }
+    im.onload = function () { (im.decode ? im.decode() : Promise.resolve()).then(ready, ready); };
+    im.src = src(i);
+  }
   load(0); load(N - 1);
   var preloaded = false;
   function preload() { if (preloaded) return; preloaded = true; for (var i = 0; i < N; i++) load(i); }
-  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { if (es[0].isIntersecting) preload(); }, { rootMargin: "800px" }).observe(morph);
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { if (es[0].isIntersecting) preload(); }, { rootMargin: "1600px" }).observe(morph);
   else preload();
   function setP(p) {
     p = Math.min(1, Math.max(0, p));
@@ -518,8 +356,7 @@ footer .logo{color:#f3c9bb}
     iron.style.transform = "translateY(" + (p * cv.clientHeight * .84).toFixed(1) + "px)";
     iron.style.opacity = p > .985 ? 0 : 1;
     bar.style.width = (p * 100).toFixed(1) + "%";
-    tagb.textContent = p < .5 ? "قبل" : "بعد";
-    morph.dataset.half = p < .5 ? "0" : "1";
+    tagb.innerHTML = p < .5 ? "<b>BEFORE</b>" : "<b>AFTER</b>";
   }
   function morphProgress() {
     var r = morph.getBoundingClientRect(), span = r.height - innerHeight;
@@ -528,11 +365,11 @@ footer .logo{color:#f3c9bb}
   var ticking = false;
   function onScroll() {
     if (ticking) return; ticking = true;
-    requestAnimationFrame(function () { ticking = false; setP(morphProgress()); });
+    requestAnimationFrame(function () { ticking = false; setP(morphProgress()); head(); });
   }
-  window.addEventListener("scroll", onScroll, { passive: true });
-  window.addEventListener("resize", onScroll);
-  setP(morphProgress());
+  addEventListener("scroll", onScroll, { passive: true });
+  addEventListener("resize", onScroll);
+  setP(morphProgress()); head();
 })();
 </script>
 
@@ -551,7 +388,7 @@ try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true 
 catch (e) { section.classList.add("nogl"); }
 
 if (renderer) {
-  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
   renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -648,7 +485,7 @@ if (renderer) {
     if (visible) { layout(now); renderer.render(scene, camera); }
     requestAnimationFrame(frame);
   }
-  new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(section);
+  new IntersectionObserver(es => { visible = es[0].isIntersecting && es[0].intersectionRect.height > 8; }, { threshold: [0, 0.01, 0.05] }).observe(section);
   addEventListener("scroll", () => { p = progress(); }, { passive: true });
   addEventListener("resize", resize);
   resize(); p = progress();
