@@ -1,0 +1,30 @@
+# ينسخ ملفات موقع BERO (صور ومجسّمات 3D من Higgsfield) إلى المستودع
+# كل سطر في bero-site/fetch.txt: <اسم الملف> <الرابط>
+name: bero-fetch-assets
+on:
+  push:
+    paths: [bero-site/fetch.txt]
+permissions:
+  contents: write
+jobs:
+  fetch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Download listed files
+        run: |
+          mkdir -p bero-site/raw
+          while read -r name url; do
+            [ -z "$name" ] && continue
+            [ -f "bero-site/raw/$name" ] && continue
+            curl -fsSL --retry 3 "$url" -o "bero-site/raw/$name"
+          done < bero-site/fetch.txt
+          ls -la bero-site/raw
+      - name: Commit
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898283+github-actions[bot]@users.noreply.github.com"
+          git add bero-site/raw
+          git diff --cached --quiet && exit 0
+          git commit -m "جلب ملفات موقع BERO"
+          git push

@@ -1,0 +1,12 @@
+shot-treatment.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074333_3005306a-8761-4580-8e8b-155ff763e44c.png
+shot-straightener.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074333_4cd5c146-fe36-459e-826d-1c5a17c90301.png
+botanical.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074619_da60f05f-2de2-4f3c-8eb6-225b62141f71.png
+duo.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074620_f7558c72-b8c2-47eb-99d6-8f3039b4b003.png
+treatment.glb https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074600_aafbe354-3e7a-4d55-bf9e-f5b406eb4088.glb
+straightener.glb https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074604_2bce5e13-8e56-4319-b17d-edbd86ccee3a.glb
+hair-frizzy.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_075011_b75d30b1-34d6-458d-9162-7f9ae5b12441.png
+hair-smooth.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_075114_6439ab82-0b5f-4a7f-808b-0095154f8d2c.png
+transform.mp4 https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_075333_3259d960-e307-4d1e-8021-f396c4b28718.mp4
+steps-sheet.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_105308_a40ce1e7-6b69-4517-89ef-223ef475b214.png
+tabby-logo.svg https://cdn.tabby.ai/assets/logo.svg
+tamara-logo.svg https://cdn.prod.website-files.com/67c184892f7a84b971ff49d9/68931b49f2808979578bdc64_tamara-text-logo-black-en.svg
