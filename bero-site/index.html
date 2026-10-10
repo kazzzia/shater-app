@@ -52,7 +52,7 @@ section[id]{scroll-margin-top:64px}
 .top .btn{height:40px;padding:0 20px;font-size:14px}
 
 /* ١ — العرض الافتتاحي ثلاثي الأبعاد */
-.show{height:400vh;height:400svh;background:linear-gradient(180deg,#f8f3f0 0%,var(--paper-2) 100%)}
+.show{height:300vh;height:300svh;background:linear-gradient(180deg,#f8f3f0 0%,var(--paper-2) 100%)}
 .show .pin{position:sticky;top:0;height:100vh;height:100svh;overflow:hidden}
 .show canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
 .show .fallback{position:absolute;inset:0;margin:auto;width:min(300px,56%);display:none}
@@ -77,15 +77,12 @@ section[id]{scroll-margin-top:64px}
 }
 
 /* ٢ — قبل وبعد */
-.morph{height:240vh;height:240svh;background:var(--wine-deep)}
+.morph{height:150vh;height:150svh;background:var(--wine-deep)}
 .morph .pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;place-items:center;overflow:hidden;padding:64px 0 0}
-.frame{position:relative;width:min(100vw,calc((100svh - 64px) * 720 / 966),640px);aspect-ratio:720/966}
+.frame{position:relative;width:min(100vw,calc((100svh - 64px) * 600 / 805),600px);aspect-ratio:600/805}
 .frame canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
-.iron{position:absolute;inset-inline:6%;height:2px;top:8%;background:#fff;box-shadow:0 0 18px 4px rgba(255,214,200,.7),0 0 50px 12px rgba(255,190,170,.3);will-change:transform;pointer-events:none}
 .tagb{position:absolute;top:18px;inset-inline-start:22px;font-size:12px;letter-spacing:.24em;color:#fff;direction:ltr}
 .tagb b{font-weight:500}
-.frame .bar{position:absolute;inset-inline:22px;bottom:22px;height:2px;background:rgba(255,255,255,.25)}
-.frame .bar i{display:block;height:100%;width:0;background:#fff}
 
 /* ٣ — المنتجان */
 .duo{padding-block:96px 72px}
@@ -189,10 +186,8 @@ footer span{direction:ltr;unicode-bidi:isolate;user-select:all}
   <section class="morph" id="morph" data-half="0" aria-label="الشعر قبل وبعد">
     <div class="pin">
       <div class="frame">
-        <canvas id="hair" width="720" height="966" role="img" aria-label="شعر مجعّد يتحوّل إلى شعر ناعم ولامع"></canvas>
-        <div class="iron" id="iron" aria-hidden="true"></div>
+        <canvas id="hair" width="600" height="805" role="img" aria-label="شعر مجعّد يتحوّل إلى شعر ناعم ولامع"></canvas>
         <span class="tagb" id="tagb"><b>BEFORE</b></span>
-        <div class="bar" aria-hidden="true"><i id="bar"></i></div>
       </div>
     </div>
   </section>
@@ -326,8 +321,8 @@ footer span{direction:ltr;unicode-bidi:isolate;user-select:all}
   tabs.s.addEventListener("click", function () { show("s"); });
 
   /* قبل وبعد: إطارات الفيديو تُرسم حسب موضع التمرير */
-  var N = 61, frames = [], cv = document.getElementById("hair"), ctx = cv.getContext("2d");
-  var morph = document.getElementById("morph"), iron = document.getElementById("iron"), bar = document.getElementById("bar");
+  var N = 31, frames = [], cv = document.getElementById("hair"), ctx = cv.getContext("2d");
+  var morph = document.getElementById("morph");
   var tagb = document.getElementById("tagb"), cur = -1;
   function src(i) { return "assets/hair/f" + String(i + 1).padStart(3, "0") + ".webp"; }
   function ok(k) { return k >= 0 && k < N && frames[k] && frames[k]._ready; }
@@ -353,9 +348,6 @@ footer span{direction:ltr;unicode-bidi:isolate;user-select:all}
     p = Math.min(1, Math.max(0, p));
     var i = Math.round(p * (N - 1));
     if (i !== cur) { cur = i; draw(i); }
-    iron.style.transform = "translateY(" + (p * cv.clientHeight * .84).toFixed(1) + "px)";
-    iron.style.opacity = p > .985 ? 0 : 1;
-    bar.style.width = (p * 100).toFixed(1) + "%";
     tagb.innerHTML = p < .5 ? "<b>BEFORE</b>" : "<b>AFTER</b>";
   }
   function morphProgress() {
@@ -388,7 +380,7 @@ try { renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true 
 catch (e) { section.classList.add("nogl"); }
 
 if (renderer) {
-  renderer.setPixelRatio(Math.min(1.75, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(Math.min(1.5, window.devicePixelRatio || 1));
   renderer.toneMapping = THREE.NeutralToneMapping; renderer.toneMappingExposure = 1.0;
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
@@ -400,9 +392,9 @@ if (renderer) {
   const camera = new THREE.PerspectiveCamera(28, 1, 0.1, 50);
 
   /* إضاءة: مفتاح دافئ، حافة وردية تتحرك، وظل ناعم على الأرض */
-  const key = new THREE.DirectionalLight(0xfff1e8, 2.2); key.position.set(2.5, 4, 3.5);
-  const rim = new THREE.SpotLight(0xffc9b8, 30, 12, 0.5, 0.8); rim.position.set(-3, 3, -2);
-  const fill = new THREE.HemisphereLight(0xffffff, 0xf3d6cc, 0.6);
+  const key = new THREE.DirectionalLight(0xfff4ec, 1.7); key.position.set(2.5, 4, 3.5);
+  const rim = new THREE.SpotLight(0xffd9cc, 18, 12, 0.6, 0.9); rim.position.set(-3, 3, -2);
+  const fill = new THREE.HemisphereLight(0xffffff, 0xeedcd4, 0.9);
   scene.add(key, rim, fill, rim.target);
   /* ظل تلامس ناعم تحت كل عبوة (بقعة دائرية متدرجة) */
   const sc = document.createElement("canvas"); sc.width = sc.height = 256;
@@ -481,8 +473,10 @@ if (renderer) {
     specT.style.transform = `translateX(${(1 - c) * 30}px)`; specS.style.transform = `translateX(${(1 - c) * -30}px)`;
     specT.style.pointerEvents = specS.style.pointerEvents = c > 0.5 ? "auto" : "none";
   }
+  let lastP = -1, lastT = 0;
   function frame(now) {
-    if (visible) { layout(now); renderer.render(scene, camera); }
+    /* نرسم إذا تغيّر التمرير، أو كل ~33ms للتمايل الخفيف — أخف على الجوال */
+    if (visible && (p !== lastP || now - lastT > 33)) { layout(now); renderer.render(scene, camera); lastP = p; lastT = now; }
     requestAnimationFrame(frame);
   }
   new IntersectionObserver(es => { visible = es[0].isIntersecting && es[0].intersectionRect.height > 8; }, { threshold: [0, 0.01, 0.05] }).observe(section);
