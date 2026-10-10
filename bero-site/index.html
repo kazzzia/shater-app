@@ -118,6 +118,7 @@ nav.links .btn:hover{color:#fff;background:var(--wine-dark)}
 @media (min-width:900px){ .product .wrap{grid-template-columns:.95fr 1.05fr} .product.alt .stage3d{order:2} }
 .stage3d{position:relative;aspect-ratio:4/5;max-height:76vh;width:100%;border-radius:24px;background:radial-gradient(circle at 50% 38%,#fff,var(--blush) 70%);overflow:hidden;border:1px solid var(--line)}
 .product.alt .stage3d{background:radial-gradient(circle at 50% 38%,#fff,var(--plum-soft) 70%)}
+@media (max-width:899px){ .stage3d{aspect-ratio:1/1;max-height:none} }
 .stage3d .still{position:absolute;inset:0;margin:auto;height:84%;width:auto;filter:drop-shadow(0 18px 24px rgba(90,21,48,.16))}
 .stage3d .hint{position:absolute;bottom:14px;inset-inline:0;margin:auto;width:max-content;max-width:90%;font-size:13px;font-weight:500;background:#fff;color:var(--muted);border:1px solid var(--line);border-radius:var(--pill);padding:6px 14px;display:flex;gap:8px;align-items:center}
 .stage3d .size{position:absolute;top:14px;inset-inline-start:14px;font-weight:700;font-size:14px;background:#fff;border:1px solid var(--line);border-radius:var(--pill);padding:3px 12px;direction:ltr}
@@ -182,14 +183,24 @@ nav.links .btn:hover{color:#fff;background:var(--wine-dark)}
 @media (min-width:860px){ .order .grid{grid-template-columns:1.15fr .85fr} }
 .pcard{background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(20px,3vw,32px);display:grid;gap:16px;grid-template-columns:1fr}
 @media (min-width:600px){ .pcard{grid-template-columns:130px 1fr;align-items:center} }
-.pcard img{width:130px;margin-inline:auto}
+.pcard img.tube{width:110px;margin-inline:auto}
 .pcard h3{font-size:22px;font-weight:800}
 .pcard .row{display:flex;align-items:baseline;gap:14px;margin-top:6px}
 .pcard .now{font-size:44px;font-weight:800;color:var(--wine);direction:ltr;unicode-bidi:isolate}
 .pcard .now small{font-size:18px}
 .pcard .was{font-size:22px;color:#a8979c;text-decoration:line-through;direction:ltr;unicode-bidi:isolate}
-.pcard .tam{background:var(--blush);border-radius:12px;padding:10px 14px;font-size:15px;margin-top:10px}
-.pcard .tam b{font-size:20px;color:var(--wine)}
+.bnpl{display:grid;gap:8px;margin-top:12px}
+.bnpl .opt{display:flex;align-items:center;justify-content:space-between;gap:10px;background:var(--blush);border-radius:12px;padding:10px 14px;font-size:15px}
+.bnpl .opt b{font-size:19px;color:var(--wine)}
+.pay-logo{display:inline-grid;place-items:center;background:#fff;border-radius:10px;padding:6px 12px;height:38px;min-width:92px;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.pay-logo img{height:20px;width:auto}
+.pay-logo.tabby{background:#3effc1}
+/* شريط الدفع بعد العرض الافتتاحي */
+.paystrip{padding-block:18px;background:#fff}
+.paystrip .wrap{display:flex;align-items:center;justify-content:center;gap:12px 16px;flex-wrap:wrap;text-align:center}
+.paystrip p{margin:0;font-weight:700;font-size:16px;color:var(--ink)}
+.paystrip p b{color:var(--wine)}
+.paystrip .logos{display:flex;gap:10px}
 .pcard .btn{margin-top:14px}
 .contact{background:var(--wine);color:#fff;border-radius:24px;padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:12px}
 .contact h3{font-size:22px;font-weight:800}
@@ -280,6 +291,17 @@ footer .logo{color:#f3c9bb}
         <a class="go" href="#straightener">التفاصيل ←</a>
       </div>
       <div class="cue" id="cue"><span>اسحبي لتحت</span><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4v16M6 14l6 6 6-6"/></svg></div>
+    </div>
+  </section>
+
+  <!-- شريط الدفع -->
+  <section class="paystrip" aria-label="طرق الدفع">
+    <div class="wrap">
+      <p>قسّميها على <b>4 دفعات</b> بدون فوائد</p>
+      <div class="logos">
+        <span class="pay-logo tabby"><img src="assets/pay/tabby.svg" width="75" height="32" alt="تابي"></span>
+        <span class="pay-logo"><img src="assets/pay/tamara.svg" width="97" height="19" alt="تمارا"></span>
+      </div>
     </div>
   </section>
 
@@ -413,11 +435,14 @@ footer .logo{color:#f3c9bb}
       </div>
       <div class="grid">
         <div class="pcard">
-          <img src="assets/shot-treatment.webp" width="540" height="1303" alt="عبوة معالج بيرو">
+          <img class="tube" src="assets/shot-treatment.webp" width="540" height="1303" alt="عبوة معالج بيرو">
           <div>
             <h3>معالج بيرو · 150 مل</h3>
             <div class="row"><span class="now">300 <small>ر.س</small></span><span class="was" aria-label="بدل 450 ريال">450</span></div>
-            <div class="tam">قسّميها مع تمارا على 4 دفعات: <b>75</b> ر.س</div>
+            <div class="bnpl" aria-label="الدفع بالتقسيط">
+              <div class="opt"><span class="pay-logo tabby"><img src="assets/pay/tabby.svg" width="75" height="32" alt="تابي"></span><span>4 دفعات × <b>75</b> ر.س بدون فوائد</span></div>
+              <div class="opt"><span class="pay-logo"><img src="assets/pay/tamara.svg" width="97" height="19" alt="تمارا"></span><span>4 دفعات × <b>75</b> ر.س بدون فوائد</span></div>
+            </div>
             <a class="btn fill" data-wa="معالج بيرو" href="https://wa.me/966532677900"><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.3-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7a2.8 2.8 0 0 0 1.8-1.3 2.3 2.3 0 0 0 .2-1.3c-.1-.1-.2-.2-.5-.3z"/></svg>اطلبي عبر واتساب</a>
           </div>
         </div>
