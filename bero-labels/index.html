@@ -1,0 +1,450 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#6a2a7c">
+<title>محرّر ملصقات BERO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@400;500;600&display=swap">
+<style>
+/* التخطيط: على الشاشات العريضة المعاينة تثبت يسارًا والحقول يمينًا؛ على الجوال المعاينة تثبت أعلى الشاشة فوق الحقول والتنزيل في الأسفل */
+:root{
+  --bg:#f3f1f4; --surface:#ffffff; --ink:#221a26; --muted:#6d6373; --line:#ddd6e0;
+  --accent:#6a2a7c; --accent-ink:#ffffff; --accent-soft:#efe3f3; --warn:#a4470c; --warn-soft:#fdeedd; --ok:#1c6f45;
+  --ui:"IBM Plex Sans Arabic","Segoe UI",Tahoma,sans-serif; color-scheme:light;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#17131a; --surface:#221c26; --ink:#f0eaf2; --muted:#a79daf; --line:#3a313f;
+  --accent:#c9a0d8; --accent-ink:#21122a; --accent-soft:#33243b; --warn:#f0b27a; --warn-soft:#3b2a1c; --ok:#7fd3a6; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#17131a; --surface:#221c26; --ink:#f0eaf2; --muted:#a79daf; --line:#3a313f;
+  --accent:#c9a0d8; --accent-ink:#21122a; --accent-soft:#33243b; --warn:#f0b27a; --warn-soft:#3b2a1c; --ok:#7fd3a6; color-scheme:dark }
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--ui);font-size:15px;line-height:1.6;direction:rtl;
+  padding-inline:max(16px,env(safe-area-inset-left)) max(16px,env(safe-area-inset-right));padding-block:0 calc(48px + env(safe-area-inset-bottom))}
+.wrap{max-width:1180px;margin:0 auto;display:flex;flex-direction:column;gap:16px}
+header.top{position:sticky;top:0;z-index:5;background:var(--bg);padding-block:calc(12px + env(safe-area-inset-top)) 10px;border-bottom:1px solid var(--line);display:flex;flex-wrap:wrap;gap:10px 16px;align-items:center;justify-content:space-between}
+h1{font-size:19px;font-weight:600;margin:0;line-height:1.3}
+.seg{display:inline-flex;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--surface);max-width:100%}
+.seg button{border:0;background:transparent;color:var(--ink);font:inherit;font-weight:500;padding:8px 14px;cursor:pointer;white-space:nowrap}
+.seg button+button{border-inline-start:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink)}
+button:focus-visible,textarea:focus-visible,select:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.status{font-size:13px;color:var(--muted);min-height:1.6em}
+.status.ok{color:var(--ok)}.status.warn{color:var(--warn)}
+.grid{display:grid;grid-template-columns:1fr;gap:20px}
+.left{display:flex;flex-direction:column;gap:12px;min-width:0}
+@media (min-width:980px){.grid{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start}.left{position:sticky;top:74px}}
+.stage,.dlbox{display:flex;flex-direction:column;gap:10px;min-width:0}
+.bar{display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center;justify-content:space-between}
+.canvasBox{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:8px;overflow:hidden}
+canvas#view{display:block;width:100%;height:auto;border-radius:6px;cursor:pointer;background:#fff;margin-inline:auto}
+.hint{font-size:13px;color:var(--muted);margin:0}
+.dl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.dl span{font-size:13px;color:var(--muted)}
+.btn{border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-weight:500;border-radius:10px;padding:8px 14px;cursor:pointer;min-height:40px}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn:disabled{opacity:.55;cursor:default}
+.fields{display:flex;flex-direction:column;gap:14px;min-width:0}
+.group{font-size:13px;font-weight:600;color:var(--muted);margin:6px 0 -4px;letter-spacing:.02em}
+.field{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.field.active{border-color:var(--accent);box-shadow:0 0 0 2px var(--accent-soft)}
+.field .head{display:flex;align-items:center;justify-content:space-between;gap:8px 10px;flex-wrap:wrap}
+.field label{font-weight:600}
+.ctrls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.sz{display:inline-flex;align-items:center;gap:6px;font-size:13px;color:var(--muted)}
+.sz button,.bold{width:34px;height:34px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--ink);font:inherit;font-size:16px;line-height:1;cursor:pointer}
+.bold{font-weight:800;font-family:Arial,sans-serif}
+.bold[aria-pressed="true"]{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.sz output{min-width:3.2em;text-align:center;font-variant-numeric:tabular-nums;color:var(--ink)}
+select{font:inherit;font-size:14px;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 8px;min-height:34px;max-width:100%}
+.fontAll{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fontAll label{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+textarea{width:100%;font:inherit;line-height:1.7;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;resize:vertical}
+textarea[dir="ltr"]{text-align:left}
+.over{font-size:13px;color:var(--warn);background:var(--warn-soft);border-radius:8px;padding:6px 10px}
+.foot{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;border-top:1px solid var(--line);padding-top:14px}
+dialog{border:1px solid var(--line);border-radius:14px;background:var(--surface);color:var(--ink);padding:16px;max-width:min(92vw,560px)}
+dialog::backdrop{background:rgba(20,10,25,.55)}
+dialog img{display:block;max-width:100%;border:1px solid var(--line);border-radius:8px;margin-block:10px}
+dialog .row{display:flex;gap:8px;justify-content:flex-end;flex-wrap:wrap}
+/* الجوال: المعاينة تبقى ظاهرة فوق الحقول وأنت تكتب */
+@media (max-width:979px){
+  header.top{position:static}
+  h1{font-size:17px}
+  .left{display:contents}
+  .grid{gap:14px}
+  .stage{order:1;position:sticky;top:0;z-index:4;background:var(--bg);margin-inline:-16px;padding:calc(8px + env(safe-area-inset-top)) 16px 8px;border-bottom:1px solid var(--line);gap:8px}
+  .fields{order:2}
+  .dlbox{order:3}
+  .tapHint{display:none}
+  .bar .seg button{padding:6px 12px;font-size:14px}
+  .canvasBox{padding:4px}
+  canvas#view{width:auto;max-width:100%;max-height:34vh;max-height:34svh}
+  body:has(.fields textarea:focus) canvas#view{max-height:24vh;max-height:24svh}
+  body:has(.fields textarea:focus) .stage .bar{display:none}
+  textarea,select{font-size:16px} /* أقل من 16 يخلّي آيفون يكبّر الصفحة عند الكتابة */
+  .field{scroll-margin-top:calc(26svh + 24px)}
+}
+@media (max-width:420px){ .fontAll{grid-template-columns:1fr} .seg button{padding:8px 11px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <h1>محرّر ملصقات BERO</h1>
+    <div class="seg" role="group" aria-label="المنتج">
+      <button type="button" id="tabTreatment" data-label="treatment" aria-pressed="true">Treatment</button>
+      <button type="button" id="tabStraightener" data-label="straightener" aria-pressed="false">Hair Straightener</button>
+    </div>
+    <div class="status" id="status" role="status" aria-live="polite"></div>
+  </header>
+
+  <div class="grid">
+    <div class="left">
+      <section class="stage" aria-label="المعاينة">
+        <div class="bar">
+          <div class="seg" role="group" aria-label="الجزء المعروض">
+            <button type="button" id="vAll" data-view="all" aria-pressed="true">الملصق كامل</button>
+            <button type="button" id="vFront" data-view="front" aria-pressed="false">الواجهة</button>
+            <button type="button" id="vBack" data-view="back" aria-pressed="false">الخلف</button>
+          </div>
+          <p class="hint" id="dims"></p>
+        </div>
+        <div class="canvasBox"><canvas id="view" width="1200" height="787"></canvas></div>
+        <p class="hint tapHint">اضغط على أي نص في الملصق لتنتقل إلى حقله. الشعار والرسمة والباركود ثابتة.</p>
+      </section>
+      <section class="dlbox" aria-label="التنزيل">
+        <div class="dl" id="dl">
+          <span>تنزيل:</span>
+          <button type="button" class="btn primary" id="dlPNG" data-fmt="png">PNG</button>
+          <button type="button" class="btn" id="dlJPG" data-fmt="jpg">JPG</button>
+          <button type="button" class="btn" id="dlPDF" data-fmt="pdf">PDF</button>
+          <button type="button" class="btn" id="dlSVG" data-fmt="svg">SVG</button>
+        </div>
+        <p class="hint" id="dlNote">PNG و JPG و PDF بدقة 600 نقطة بالمقاس الحقيقي. SVG يحتفظ بالنص قابلًا للتعديل في Illustrator.</p>
+      </section>
+    </div>
+
+    <section class="fields" id="fields" aria-label="النصوص"></section>
+  </div>
+
+  <div class="foot">
+    <p class="hint" id="saveNote">التعديلات تُحفظ تلقائيًا.</p>
+    <button type="button" class="btn" id="reset">رجّع نصوص هذا الملصق للأصل</button>
+  </div>
+</div>
+
+<dialog id="dlg">
+  <strong id="dlgT"></strong>
+  <div id="dlgB"></div>
+  <div class="row"><button type="button" class="btn" id="dlgNo">إغلاق</button><button type="button" class="btn primary" id="dlgYes" hidden>نعم، رجّعها</button></div>
+</dialog>
+
+<script src="jspdf.umd.min.js"></script>
+<script>
+(function () {
+"use strict";
+/* الخطوط المتاحة: [المفتاح، الاسم، عائلة Google، الأوزان، بديل النظام] — تُحمَّل من Google Fonts عند أول استخدام */
+var FONT_LIST = { "عربي": [
+    ["cairo", "Cairo", "Cairo", "400;700;800", "Tahoma, sans-serif"],
+    ["taj", "Tajawal", "Tajawal", "400;500;700;800", "Tahoma, sans-serif"],
+    ["alm", "Almarai", "Almarai", "400;700;800", "Tahoma, sans-serif"],
+    ["nsa", "Noto Sans Arabic", "Noto Sans Arabic", "400;700", "Tahoma, sans-serif"],
+    ["nna", "Noto Naskh Arabic", "Noto Naskh Arabic", "400;700", "\"Traditional Arabic\", serif"],
+    ["ibm", "IBM Plex Sans Arabic", "IBM Plex Sans Arabic", "400;700", "Tahoma, sans-serif"],
+    ["ami", "Amiri", "Amiri", "400;700", "\"Traditional Arabic\", serif"],
+    ["sch", "Scheherazade New", "Scheherazade New", "400;700", "\"Traditional Arabic\", serif"],
+    ["mrk", "Markazi Text", "Markazi Text", "400;700", "serif"],
+    ["msr", "El Messiri", "El Messiri", "400;700", "Tahoma, sans-serif"],
+    ["chg", "Changa", "Changa", "400;700;800", "Tahoma, sans-serif"],
+    ["rdx", "Readex Pro", "Readex Pro", "400;700", "Tahoma, sans-serif"],
+    ["rkf", "Reem Kufi", "Reem Kufi", "400;700", "Tahoma, sans-serif"],
+    ["lat", "Lateef", "Lateef", "400;700", "serif"],
+    ["aref", "Aref Ruqaa", "Aref Ruqaa", "400;700", "serif"],
+    ["lal", "Lalezar", "Lalezar", "", "Tahoma, sans-serif"]
+  ], "إنجليزي": [
+    ["os", "Open Sans", "Open Sans", "400;700;800", "Arial, sans-serif"],
+    ["ari", "Arimo", "Arimo", "400;700", "Arial, sans-serif"],
+    ["poi", "Poiret One", "Poiret One", "", "\"Century Gothic\", sans-serif"],
+    ["mont", "Montserrat", "Montserrat", "400;700;800", "Arial, sans-serif"],
+    ["pop", "Poppins", "Poppins", "400;700;800", "Arial, sans-serif"],
+    ["rob", "Roboto", "Roboto", "400;700", "Arial, sans-serif"],
+    ["lato", "Lato", "Lato", "400;700", "Arial, sans-serif"],
+    ["ral", "Raleway", "Raleway", "400;700;800", "Arial, sans-serif"],
+    ["jos", "Josefin Sans", "Josefin Sans", "400;700", "Arial, sans-serif"],
+    ["osw", "Oswald", "Oswald", "400;700", "Arial, sans-serif"],
+    ["pfd", "Playfair Display", "Playfair Display", "400;700;800", "Georgia, serif"],
+    ["crm", "Cormorant Garamond", "Cormorant Garamond", "400;700", "Georgia, serif"],
+    ["bebas", "Bebas Neue", "Bebas Neue", "", "Arial, sans-serif"],
+    ["gv", "Great Vibes", "Great Vibes", "", "cursive"]
+  ] };
+var FONTS = {}, F = {};
+Object.keys(FONT_LIST).forEach(function (g) { FONT_LIST[g].forEach(function (r) { FONTS[r[0]] = { n: r[1], fam: r[2], w: r[3], css: '"' + r[2] + '", ' + r[4] }; F[r[0]] = r[0]; }); });
+var fontLinks = {};
+function ensureFont(k) { var f = FONTS[k]; if (!f) return Promise.resolve(); if (!fontLinks[k]) fontLinks[k] = new Promise(function (res) {
+  var l = document.createElement("link"); l.rel = "stylesheet"; l.onload = l.onerror = function () { res(); };
+  l.href = "https://fonts.googleapis.com/css2?family=" + f.fam.replace(/ /g, "+") + (f.w ? ":wght@" + f.w : "") + "&display=swap"; document.head.appendChild(l); });
+  return fontLinks[k]; }
+var CONTACT = "Exclusive: Bero.treatment@outlook.sa\n+966 (532677900 )\nABEER ABDULRAHMAN ALSHAHRANI";
+/* كل القياسات بالنقطة (pt) في فضاء صفحة الملف الأصلي. x: حافة المحاذاة (يمين/وسط/يسار) · y: أعلى الكتلة · w: أقصى عرض · h: المساحة المتاحة */
+var LABELS = {
+  treatment: { file: "bero-treatment", w: 435.75, h: 285.75, mm: [153.7, 100.8], bg: "treatment.png", back: [14, 0, 197, 285.75], front: [230, 0, 414, 285.75],
+    rule: { x: 322.2, y1: 229, y2: 279.5, c: "#7a1238", w: 0.7 },
+    blocks: [
+      { id: "tag1", g: "الواجهة", name: "السطر الأول تحت الشعار", x: 320.6, y: 178.5, w: 128, h: 15, size: 13, lh: 1.15, font: F.taj, wt: 800, align: "center", dir: "rtl", c: "#7a1238", text: "معالج و منعم للشعر" },
+      { id: "tag2", g: "الواجهة", name: "السطر الثاني تحت الشعار", x: 320.6, y: 194.6, w: 128, h: 13, size: 9, lh: 1.15, font: F.taj, wt: 500, align: "center", dir: "rtl", c: "#7a1238", text: "يساعد على منع التساقط" },
+      { id: "ctitle", g: "الواجهة", name: "عنوان المحتويات", x: 388.5, y: 222.5, w: 66, h: 20, size: 14, lh: 1.1, font: F.sch, wt: 400, align: "right", dir: "rtl", c: "#7a1238", text: "يحتوي على:" },
+      { id: "clist", g: "الواجهة", name: "قائمة المحتويات", x: 315, y: 222, w: 76, h: 60, size: 12, lh: 1.21, font: F.sch, wt: 400, align: "right", dir: "rtl", c: "#7a1238", text: "زيت جوز الهند\nجنين القمح\nزيت بذور العنب\nزهرة القادرينا" },
+      { id: "vol", g: "الواجهة", name: "الحجم", x: 364, y: 266.5, w: 70, h: 15, size: 13, lh: 1.1, font: F.poi, wt: 400, align: "center", dir: "ltr", c: "#7a1238", text: "150 ml" },
+      { id: "btitle", g: "الخلف", name: "عنوان الخلف", x: 107, y: 17, w: 165, h: 7, size: 4.7, lh: 1.2, font: F.os, wt: 700, align: "center", dir: "ltr", c: "#470e21", text: "BERO PROGRESSIVE HAIR TREATMENT" },
+      { id: "body", g: "الخلف", name: "طريقة الاستخدام والتحذيرات", x: 183.5, y: 26, w: 158, h: 101.5, size: 4.1, lh: 1.073, font: F.nsa, wt: 400, align: "right", dir: "rtl", c: "#470e21", text:
+        "نعومة. لمعان. تحكّم كامل.\nطريقة الاستخدام:\n1. اغسلي الشعر بشامبو تنظيف عميق.\n2. جففي حسب نوع شعرك (50٪ للمصبوغ، 100٪ للطبيعي).\n3. قسّمي الشعر وابدئي بوضع المنتج باستخدام فرشاة – لا تلمسي فروة الرأس.\n4. مشّطي الشعر واتركي المنتج 20–30 دقيقة للمصبوغ أو 50–60 دقيقة للطبيعي.\n5. اشطفي الشعر بالماء 50٪ فقط، ثم جففيه بالهواء الساخن\n6. استخدمي مكواة الشعر:\n- 200–230°C للشعر الطبيعي\n- 150–180°C للشعر المصبوغ أو المسامي\n(مرري المكواة على كل خصلة من 10–15 مرة)\n7. انهي بالهواء البارد ثم اغسلي الشعر ببلسم\nنصيحة مهمة:\nاستخدمي مكواة سيراميك أو تيتانيوم فقط، وكرري العلاج كل سته اشهر\nرجي العبوة قبل الاستخدام – تغير اللزوجة طبيعي حسب الطقس.\nالتحذيرات:\n* للاستعمال الخارجي فقط\n* يُحفظ بعيداً عن متناول الأطفال\n* لا يُستخدم على فروة رأس متهيجة أو جروح\n* غير مناسب للأطفال تحت 6 سنوات\n* استشيري الطبيب إذا كنتِ حامل أو مرضعة\nاختبار الخصلة:\nجرب على خصلة صغيرة. إذا لاحظتي التفاف الأطراف خلال 20 دقيقة، اشطفي فوراً (خلال 15 دقيقة)" },
+      { id: "ihead", g: "الخلف", name: "عنوان المكونات", x: 106, y: 128.6, w: 150, h: 6, size: 4.1, lh: 1.1, font: F.nsa, wt: 400, align: "center", dir: "rtl", c: "#470e21", text: "Ingredients (المكونات):" },
+      { id: "ingr", g: "الخلف", name: "المكونات (إنجليزي)", x: 28.6, y: 138, w: 155.3, h: 28, size: 3.5, lh: 1.086, font: F.ari, wt: 400, align: "justify", dir: "ltr", c: "#470e21", text:
+        "Aqua, Glyoxylic Acid, Cetearyl Alcohol, Ceteareth-20, Glyceryl Stearate, Propylene Glycol, Polysorbate 60, Behentrimonium Methosulfate, Glyceryl Distearate, Tristearin, Cetrimonium Chloride, Parfum, Glyoxyloyl Carbocysteine, Glycerin, Glyoxyloyl Keratin Amino Acids, Isopropyl Alcohol, Sodium Stearate, Disodium EDTA, Hexyl Cinnamal, Hydrolyzed Wheat Protein, Stearic Acid, Hydrolyzed Collagen, Linalool, Sodium PCA, Sodium Lactate, Hydroxycitronellal, Arginine, Aspartic Acid, PCA, Glycine, Alanine, Isoleucine, Serine, Sodium Benzoate, Potassium Sorbate, Valine, Proline, Threonine, Histidine, Phenylalanine." },
+      { id: "mkt", g: "الخلف", name: "الوصف التسويقي", x: 183.9, y: 167.4, w: 150, h: 78, size: 3.5, lh: 1.086, font: F.nsa, wt: 400, align: "right", dir: "rtl", c: "#470e21", text:
+        "ودّعي النفشة والتطاير والتقصف مع علاج الشعر المتقدّم من BERO!\nتركيبة فعّالة تحتوي على الأحماض الأمينية وبروتين القمح، تساعد على:\n- تنعيم الشعر نعومه طبيعيه\n- تقليل التساقط وزيادة كثافة الشعر\n- ترميم الشعر التالف والمحروق\n- شعر سهل التسريح والانسياب" },
+      { id: "contact", g: "الخلف", name: "بيانات التواصل", x: 181.7, y: 250, w: 96, h: 16, size: 4.3, lh: 1.07, font: F.ari, wt: 400, align: "right", dir: "ltr", boldLabel: true, c: "#470e21", text: CONTACT }
+    ] },
+  straightener: { file: "bero-hair-straightener", w: 436.27, h: 286.03, mm: [153.9, 100.9], bg: "straightener.png", back: [18, 0, 201, 286.03], front: [235, 0, 419, 286.03],
+    rule: { x: 325.6, y1: 222, y2: 277, c: "#491558", w: 0.6 },
+    blocks: [
+      { id: "tag1", g: "الواجهة", name: "السطر تحت الشعار", x: 325.3, y: 170.5, w: 128, h: 30, size: 11, lh: 1.25, font: F.ami, wt: 700, align: "center", dir: "rtl", c: "#3d0a4b", text: "منعم للشعر شديد الخشونه" },
+      { id: "ctitle", g: "الواجهة", name: "عنوان المحتويات", x: 390, y: 220.5, w: 60, h: 18, size: 12.5, lh: 1.1, font: F.sch, wt: 700, align: "right", dir: "rtl", c: "#3d0a4b", text: "يحتوي على:" },
+      { id: "clist", g: "الواجهة", name: "قائمة المحتويات", x: 321, y: 226.2, w: 78, h: 54, size: 7.4, lh: 1.22, font: F.nna, wt: 400, align: "right", dir: "rtl", c: "#3d0a4b", text: "يحتوي على:\nزيت بذور المكديميا\nبروتين القمح\nكولاجين واحماض امينيه" },
+      { id: "vol", g: "الواجهة", name: "الحجم", x: 367.7, y: 264, w: 70, h: 14, size: 11, lh: 1.1, font: F.poi, wt: 400, align: "center", dir: "ltr", c: "#3d0a4b", text: "150 ml" },
+      { id: "btitle", g: "الخلف", name: "عنوان الخلف", x: 108.4, y: 7.6, w: 170, h: 12, size: 9.4, lh: 1.2, font: F.os, wt: 700, align: "center", dir: "ltr", c: "#491558", text: "BERO HAIR STRAIGHTENER" },
+      { id: "body", g: "الخلف", name: "طريقة الاستخدام والتحذيرات", x: 193.2, y: 23.4, w: 167, h: 141, size: 4.1, lh: 1.205, font: F.nna, wt: 400, align: "right", dir: "rtl", c: "#491558", text:
+        "نعومة عاليه .لمعان وترطيب .تحكّم كامل حتى في اصعب انواع الشعر.\nطريقة الاستخدام:\n1. اغسلي الشعر بشامبو تنظيف عميق يفضل كلاريفينج شامبو او بديل.\n2. جففي حسب نوع شعرك (80٪ للمصبوغ، 100٪ للطبيعي).\n3. قسّمي الشعر وابدئي بوضع المنتج باستخدام فرشاة – لا تلمسي فروة الرأس.\n4. مشّطي الشعر بمشط ضيق الفتحات لإزالة زوائد البروتين من الخصل ، واتركي المنتج 20-30 دقيقة للمصبوغ أو 50–60 دقيقة للطبيعي.\n5. اذا رغبتي بنعومه طبيعيه متوسطه اغسلي الشعر بالماء 50٪ ثم جففي بالهواء الساخن، واذا رغبتي بالفرد ونعومه فائقه جففي الشعر بالهواء الساخن 100٪ دون غسله بالماء.\n6. استخدمي مكواة الشعر وتُفضل ان تكون خاصه بالفرد:\n- 200–230°C للشعر الطبيعي\n- 150–180°C للشعر المصبوغ أو المسامي\n(مرري المكواة على كل خصلة من 10–15 مرة الى ان تُصبح الخُصله لينه ولماعه\n7. انهي بالهواء البارد ثم اغسلي الشعر ببلسم\nنصيحة مهمة:\nاستخدمي مكواة سيراميك أو تيتانيوم فقط.\nرجي العبوة قبل الاستخدام – تغير اللزوجة طبيعي حسب الطقس.\nالتحذيرات:\n• للاستعمال الخارجي فقط\n• يُحفظ بعيداً عن متناول الأطفال\n• لا يُستخدم على فروة رأس متهيجة أو جروح\n• يفضل عدم استخدام الزيوت، واستخدام شامبوهات خاصه بالشعر المفرود.\n• غير مناسب للأطفال تحت 6 سنوات\n• استشيري الطبيب إذا كنتِ حامل أو مرضعة\n• يدوم من عشره اشهر الى سنه.\n- عند انتهاء مدة الفرد يختفي كامل من الشعر دون ترك اثر فرد.\nاختبار الخصلة:\nجربي على خصلة صغيرة. إذا لاحظتي التفاف الأطراف خلال 20 دقيقة، اشطفي فوراً (خلال 15 دقيقة)." },
+      { id: "ihead", g: "الخلف", name: "عنوان المكونات", x: 193.2, y: 164.6, w: 150, h: 6, size: 4.1, lh: 1.1, font: F.nna, wt: 400, align: "right", dir: "rtl", c: "#491558", text: "المكونـــات:" },
+      { id: "ingr", g: "الخلف", name: "المكونات (إنجليزي)", x: 24.3, y: 171.2, w: 168, h: 57.5, size: 3.8, lh: 1.15, font: F.ari, wt: 400, align: "justify", last: "right", dir: "ltr", c: "#491558", text:
+        "Alcohol, Glyceryl Stearate SE, Cetrimonium Chloride, Ceteareth-20, Cetearyl Alcohol, Polysorbate 60, Propylene Glycol, Cetyl Alcohol, Behentrimonium Chloride, Parfum, Octadecyl Di-T-Butyl-4-Hydroxyhydrocinnamate, Hydrolyzed Silk, Hydrolyzed Wheat Protein, Creatine, Disodium EDTA, Hydrolyzed Collagen, Lactic Acid, Sodium PCA, Sodium Lactate, Benzotriazolyl Dodecyl P-Cresol, Arginine, Cocodimonium Hydroxypropoyl Hydrolyzed Keratin, Hydrolyzed Keratin, Aspartic Acid, PCA, Lactobionic Acid, Glycine Soja Oil, Glycine, Alanine, Elaeis Oleifera Kernel Oil, Linum Usitatissimum Seed Oil, Macadamia Ternifolia Seed Oil, Gossypium Herbaceum Seed Oil, Helianthus Annuus Seed Oil, Argania Spinosa Kernel Oil, Bertholletia Excelsa Seed Oil, Canola Oil, Carapa Guaianensis Seed Oil, Copaifera Officinalis Resin, Corylus Avellana Seed Oil, Pentaclethra Macroloba Seed Oil, Persea Gratissima Oil, Paraffinum Liquidum, Prunus Amygdalus Dulcis Oil, Tocopheryl Acetate, Triticum Vulgare Germ Oil, Vitis Vinifera Seed Oil, Serine, Valine, Simmondsia Chinensis Seed Oil, Cocos Nucifera Oil, Gardenia Tahitensis Flower, Proline, Isoleucine, Threonine, Methylchloroisothiazolinone / Methylisothiazolinone, Phenylalanine, Histidine" },
+      { id: "mkt", g: "الخلف", name: "الوصف التسويقي", x: 192.3, y: 229.6, w: 166, h: 36.5, size: 3.6, lh: 1.24, font: F.nna, wt: 400, align: "right", dir: "rtl", c: "#491558", text:
+        "ودّعي الخشونه والجفاف والتقصف مع مُملس الشعر المتقدّم من BERO!\nتتميز هذه التركيبة بتكنولوجيا إصلاح مكثفة تعوّض الشعر عن العناصر المفقودة، مما يمنحه مظهراً صحياً، ناعماً، وأسهل في التصفيف .تحتوي على الأحماض الأمينية وبروتين القمح، وخالي من السلفات والفورمالديهايد لتجربه آمنه وفعاله.\nتساعد على:\n- تنعيم الشعر نعومه فوريه\n- تقوية ألياف الشعر وترميم عميق وحمايه\n- لمعه وحيويه وجاذبيه\n- شعر سهل التسريح والانسياب" },
+      { id: "contact", g: "الخلف", name: "بيانات التواصل", x: 190.7, y: 266.8, w: 112, h: 17, size: 4.7, lh: 1.05, font: F.ari, wt: 400, align: "right", dir: "ltr", boldLabel: true, c: "#491558", text: CONTACT }
+    ] }
+};
+
+var $ = function (id) { return document.getElementById(id); };
+var cur = "treatment", view = "all", active = null;
+var narrow = window.matchMedia("(max-width:979px)");
+var state = {}, bgs = {}, dirty = {}, db = null, downloads = null, canWrite = true, saveT = null;
+var LS = "bero_labels_v1";
+function defaults(id) { var t = {}, s = {}, f = {}, w = {}; LABELS[id].blocks.forEach(function (b) { t[b.id] = b.text; s[b.id] = b.size; f[b.id] = b.font; w[b.id] = b.wt; }); return { t: t, s: s, f: f, w: w, at: 0 }; }
+Object.keys(LABELS).forEach(function (id) { state[id] = defaults(id); });
+function mergeIn(id, d) { if (!d || typeof d !== "object") return; var st = state[id];
+  LABELS[id].blocks.forEach(function (b) { if (d.t && typeof d.t[b.id] === "string") st.t[b.id] = d.t[b.id].slice(0, 6000); if (d.s && +d.s[b.id] > 0) st.s[b.id] = Math.min(60, Math.max(1.5, +d.s[b.id]));
+    if (d.f && FONTS.hasOwnProperty(d.f[b.id])) st.f[b.id] = d.f[b.id]; if (d.w && +d.w[b.id] >= 100 && +d.w[b.id] <= 900) st.w[b.id] = Math.round(+d.w[b.id] / 100) * 100; });
+  st.at = +d.at || 0; }
+try { var loc = JSON.parse(localStorage.getItem(LS) || "null"); if (loc) Object.keys(LABELS).forEach(function (id) { mergeIn(id, loc[id]); }); } catch (_e) { }
+function saveLocal() { try { localStorage.setItem(LS, JSON.stringify(state)); } catch (_e) { } }
+function status(t, cls) { var e = $("status"); e.textContent = t || ""; e.className = "status" + (cls ? " " + cls : ""); }
+
+/* ── التخطيط: يلفّ النص داخل عرض الكتلة ويرجّع الأسطر بمواضعها (بالنقطة) ── */
+var mc = document.createElement("canvas").getContext("2d");
+function fontOf(b, size, wt) { return (wt || b.wt) + " " + size.toFixed(3) + "px " + b.font; }
+/* الكتلة كما تُرسم: الخط والوزن من اختيار المستخدم بدل الأصل */
+function eb(b, st) { var o = {}; for (var k in b) o[k] = b[k]; o.font = FONTS[st.f[b.id]].css; o.wt = st.w[b.id]; return o; }
+function layout(L, b, st) {
+  var K = 20, size = st.s[b.id], lines = [], lh = size * b.lh;   /* القياس بحجم مكبَّر ثم يُقسَم — أدقّ من قياس خط ٣ بكسل */
+  mc.font = fontOf(b, size * K); mc.direction = b.dir;
+  var W = function (s) { return mc.measureText(s).width / K; };
+  String(st.t[b.id] || "").split("\n").forEach(function (par) {
+    var words = par.split(/\s+/).filter(Boolean); if (!words.length) { lines.push({ text: "", words: [], end: true }); return; }
+    var line = [];
+    words.forEach(function (w) { var tryL = line.concat([w]).join(" "); if (line.length && W(tryL) > b.w) { lines.push({ text: line.join(" "), words: line, end: false }); line = [w]; } else line.push(w); });
+    lines.push({ text: line.join(" "), words: line, end: true });
+  });
+  lines.forEach(function (l, i) { l.y = b.y + size * 0.82 + i * lh; l.w = W(l.text); });
+  var left = b.align === "right" ? b.x - b.w : b.align === "center" ? b.x - b.w / 2 : b.x;
+  return { lines: lines, size: size, box: [left, b.y, b.w, Math.max(lines.length * lh, size * 1.2)], over: lines.length * lh > b.h + 0.6, W: W };
+}
+/* قطع السطر المرسومة: [{t, x, anchor, bold}] — مصدر واحد للرسم على الكانفس ولتصدير SVG */
+function pieces(b, lay) {
+  var out = [];
+  lay.lines.forEach(function (l) {
+    if (!l.text) return;
+    var m = b.boldLabel && /^([A-Za-z ]{2,24}:)(\s*)(.*)$/.exec(l.text);
+    if (m) { mc.font = fontOf(b, lay.size * 20, 700); var bw = mc.measureText(m[1] + "  ").width / 20; mc.font = fontOf(b, lay.size * 20); var rw = mc.measureText(m[3]).width / 20;
+      var x0 = b.align === "right" ? b.x - bw - rw : b.x; out.push({ t: m[1], x: x0, y: l.y, a: "left", bold: true }, { t: m[3], x: x0 + bw, y: l.y, a: "left" }); return; }
+    if (b.align === "justify") {
+      if (!l.end && l.words.length > 1) { var tot = 0, ws = l.words.map(function (w) { var x = lay.W(w); tot += x; return x; }), gap = (b.w - tot) / (l.words.length - 1), x = b.x;
+        l.words.forEach(function (w, i) { out.push({ t: w, x: x, y: l.y, a: "left" }); x += ws[i] + gap; }); }
+      else if (b.last === "right") out.push({ t: l.text, x: b.x + b.w, y: l.y, a: "right" });
+      else out.push({ t: l.text, x: b.x, y: l.y, a: "left" });
+      return; }
+    out.push({ t: l.text, x: b.x, y: l.y, a: b.align });
+  });
+  return out;
+}
+function draw(ctx, L, st, S, ox, oy, mark) {
+  ctx.textBaseline = "alphabetic";
+  var r = L.rule; ctx.strokeStyle = r.c; ctx.lineWidth = r.w * S; ctx.beginPath(); ctx.moveTo((r.x - ox) * S, (r.y1 - oy) * S); ctx.lineTo((r.x - ox) * S, (r.y2 - oy) * S); ctx.stroke();
+  var boxes = {};
+  L.blocks.forEach(function (b0) {
+    var b = eb(b0, st), lay = layout(L, b, st); boxes[b.id] = lay; ctx.fillStyle = b.c; ctx.direction = b.dir;
+    pieces(b, lay).forEach(function (p) { ctx.font = fontOf(b, lay.size * S, p.bold ? 700 : 0); ctx.textAlign = p.a; ctx.fillText(p.t, (p.x - ox) * S, (p.y - oy) * S); });
+    if (mark && (mark === b.id || lay.over)) { ctx.save(); ctx.setLineDash([5, 4]); ctx.lineWidth = 1.5; ctx.strokeStyle = lay.over ? "#c2570c" : "#8a3ea3";
+      ctx.strokeRect((lay.box[0] - 2 - ox) * S, (lay.box[1] - 1.5 - oy) * S, (lay.box[2] + 4) * S, (lay.box[3] + 3) * S); ctx.restore(); }
+  });
+  return boxes;
+}
+function viewRect(L) { return view === "front" ? L.front : view === "back" ? L.back : [0, 0, L.w, L.h]; }
+var lastBoxes = {}, raf = 0;
+function render() { if (raf) return; raf = requestAnimationFrame(function () { raf = 0;
+  var L = LABELS[cur], cv = $("view"), v = viewRect(L), vw = v[2] - v[0], vh = v[3] - v[1];
+  var cssW = Math.max(240, cv.parentNode.clientWidth - 16), px = Math.min(2400, Math.round(cssW * Math.min(3, window.devicePixelRatio || 1)));
+  if (view !== "all") px = Math.min(px, 1500);
+  cv.width = px; cv.height = Math.round(px * vh / vw); var S = px / vw, ctx = cv.getContext("2d");
+  ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, cv.width, cv.height);
+  var im = bgs[cur]; if (im) { var k = im.naturalWidth / L.w; ctx.imageSmoothingQuality = "high"; ctx.drawImage(im, v[0] * k, v[1] * k, vw * k, vh * k, 0, 0, cv.width, cv.height); }
+  lastBoxes = draw(ctx, L, state[cur], S, v[0], v[1], active || "-");
+  L.blocks.forEach(function (b) { var o = $("ov_" + b.id); if (o) o.hidden = !lastBoxes[b.id].over; });
+}); }
+
+/* ── الحقول ── */
+function fontSelect(id, value, placeholder) { var sel = document.createElement("select"); sel.id = id;
+  if (placeholder) { var o0 = document.createElement("option"); o0.value = ""; o0.textContent = placeholder; sel.appendChild(o0); }
+  Object.keys(FONT_LIST).forEach(function (g) { var og = document.createElement("optgroup"); og.label = g;
+    FONT_LIST[g].forEach(function (r) { var o = document.createElement("option"); o.value = r[0]; o.textContent = r[1]; og.appendChild(o); }); sel.appendChild(og); });
+  sel.value = value || ""; return sel; }
+function refreshFont(k) { ensureFont(k).then(function () { return loadFonts(cur); }).then(render); }
+/* «كل النصوص العربية / الإنجليزية»: يغيّر خط كل الكتل بهذا الاتجاه دفعة وحدة */
+function buildFontAll(box) { var L = LABELS[cur], st = state[cur], card = document.createElement("div"); card.className = "field fontAll";
+  [["rtl", "خط كل النصوص العربية"], ["ltr", "خط كل النصوص الإنجليزية"]].forEach(function (p) {
+    var bs = L.blocks.filter(function (b) { return b.dir === p[0]; }), same = bs.every(function (b) { return st.f[b.id] === st.f[bs[0].id]; });
+    var lab = document.createElement("label"), sel = fontSelect("fa_" + p[0], same ? st.f[bs[0].id] : "", "خطوط مختلفة");
+    lab.appendChild(document.createTextNode(p[1])); lab.appendChild(sel); card.appendChild(lab);
+    sel.addEventListener("change", function () { var k = sel.value; if (!k) return;
+      bs.forEach(function (b) { st.f[b.id] = k; var fs = $("fs_" + b.id); if (fs) fs.value = k; }); refreshFont(k); touch(); });
+  });
+  box.appendChild(card); }
+function syncFontAll() { var L = LABELS[cur], st = state[cur]; ["rtl", "ltr"].forEach(function (d) { var sel = $("fa_" + d); if (!sel) return;
+  var bs = L.blocks.filter(function (b) { return b.dir === d; }); sel.value = bs.every(function (b) { return st.f[b.id] === st.f[bs[0].id]; }) ? st.f[bs[0].id] : ""; }); }
+function buildFields() {
+  var L = LABELS[cur], st = state[cur], box = $("fields"), g = ""; box.textContent = "";
+  buildFontAll(box);
+  L.blocks.forEach(function (b) {
+    if (b.g !== g) { g = b.g; var h = document.createElement("div"); h.className = "group"; h.textContent = g; box.appendChild(h); }
+    var f = document.createElement("div"); f.className = "field"; f.id = "f_" + b.id;
+    var head = document.createElement("div"); head.className = "head";
+    var lab = document.createElement("label"); lab.htmlFor = "t_" + b.id; lab.textContent = b.name;
+    var sz = document.createElement("div"); sz.className = "sz";
+    var minus = document.createElement("button"), out = document.createElement("output"), plus = document.createElement("button"), cap = document.createElement("span");
+    cap.textContent = "حجم الخط"; minus.type = plus.type = "button"; minus.textContent = "−"; plus.textContent = "+"; minus.id = "m_" + b.id; plus.id = "p_" + b.id;
+    minus.setAttribute("aria-label", "صغّر خط " + b.name); plus.setAttribute("aria-label", "كبّر خط " + b.name);
+    var show = function () { out.textContent = (Math.round(st.s[b.id] * 10) / 10) + " pt"; }; show();
+    var step = function (d) { var s = st.s[b.id], inc = s < 6 ? 0.1 : 0.5; st.s[b.id] = Math.min(60, Math.max(1.5, Math.round((s + d * inc) * 10) / 10)); show(); touch(); };
+    minus.addEventListener("click", function () { step(-1); }); plus.addEventListener("click", function () { step(1); });
+    sz.appendChild(cap); sz.appendChild(minus); sz.appendChild(out); sz.appendChild(plus);
+    var fs = fontSelect("fs_" + b.id, st.f[b.id]); fs.setAttribute("aria-label", "خط " + b.name);
+    fs.addEventListener("change", function () { st.f[b.id] = fs.value; syncFontAll(); refreshFont(fs.value); touch(); });
+    var bold = document.createElement("button"); bold.type = "button"; bold.className = "bold"; bold.textContent = "B"; bold.title = "عريض"; bold.setAttribute("aria-label", "خط عريض لـ " + b.name);
+    var showB = function () { bold.setAttribute("aria-pressed", String(st.w[b.id] >= 600)); }; showB();
+    bold.addEventListener("click", function () { st.w[b.id] = st.w[b.id] >= 600 ? 400 : (b.wt >= 600 ? b.wt : 700); showB(); refreshFont(st.f[b.id]); touch(); });
+    var ctrls = document.createElement("div"); ctrls.className = "ctrls"; ctrls.appendChild(fs); ctrls.appendChild(bold); ctrls.appendChild(sz);
+    head.appendChild(lab); head.appendChild(ctrls);
+    var ta = document.createElement("textarea"); ta.id = "t_" + b.id; ta.dir = b.dir; ta.value = st.t[b.id]; ta.spellcheck = false;
+    ta.rows = Math.min(12, Math.max(1, st.t[b.id].split("\n").length + (st.t[b.id].length > 300 ? 4 : 0)));
+    ta.addEventListener("input", function () { st.t[b.id] = ta.value; touch(); });
+    ta.addEventListener("focus", function () { if (narrow.matches) setView(b.g === "الواجهة" ? "front" : "back"); setActive(b.id, false); });
+    var ov = document.createElement("div"); ov.className = "over"; ov.id = "ov_" + b.id; ov.hidden = true; ov.textContent = "النص أطول من مساحته في الملصق — اختصره أو صغّر الخط.";
+    f.appendChild(head); f.appendChild(ta); f.appendChild(ov); box.appendChild(f);
+  });
+}
+function setActive(id, scroll) { active = id; [].forEach.call(document.querySelectorAll(".field.active"), function (x) { x.classList.remove("active"); });
+  var f = $("f_" + id); if (f) { f.classList.add("active"); if (scroll) { f.scrollIntoView({ block: "center", behavior: "smooth" }); var t = $("t_" + id); if (t) t.focus({ preventScroll: true }); } } render(); }
+$("view").addEventListener("click", function (e) {
+  var L = LABELS[cur], cv = $("view"), r = cv.getBoundingClientRect(), v = viewRect(L), x = v[0] + (e.clientX - r.left) / r.width * (v[2] - v[0]), y = v[1] + (e.clientY - r.top) / r.height * (v[3] - v[1]), hit = null, best = 1e9;
+  L.blocks.forEach(function (b) { var bx = lastBoxes[b.id] && lastBoxes[b.id].box; if (!bx) return; var pad = 3;
+    if (x >= bx[0] - pad && x <= bx[0] + bx[2] + pad && y >= bx[1] - pad && y <= bx[1] + bx[3] + pad) { var a = bx[2] * bx[3]; if (a < best) { best = a; hit = b.id; } } });
+  if (hit) setActive(hit, true);
+});
+
+/* ── الحفظ: على الجهاز دائمًا، ومشترك عبر قاعدة الصفحة إن توفّرت ── */
+function touch() { state[cur].at = Date.now(); dirty[cur] = true; saveLocal(); render(); status("يحفظ…"); clearTimeout(saveT); saveT = setTimeout(flush, 1200); }
+function flush() {
+  var ids = Object.keys(dirty).filter(function (k) { return dirty[k]; });
+  if (!db || !canWrite) { ids.forEach(function (k) { dirty[k] = false; }); status(db ? "للعرض فقط — تعديلاتك محفوظة على جهازك" : "محفوظ على هذا الجهاز", db ? "warn" : "ok"); return; }
+  Promise.all(ids.map(function (id) { var st = state[id]; dirty[id] = false;
+    return db.doc("labels/" + id).set({ t: st.t, s: st.s, at: st.at }); }))
+    .then(function () { status("تم الحفظ للجميع", "ok"); })
+    .catch(function () { canWrite = false; status("للعرض فقط — تعديلاتك محفوظة على جهازك", "warn"); });
+}
+function applyRemote(id, d) { if (!d || dirty[id] || (+d.at || 0) <= state[id].at) return; mergeIn(id, d); saveLocal(); if (id === cur) { var a = document.activeElement; if (!a || a.tagName !== "TEXTAREA") buildFields(); render(); } }
+
+/* ── التصدير ── */
+function fullCanvas(S) { var L = LABELS[cur], c = document.createElement("canvas"); c.width = Math.round(L.w * S); c.height = Math.round(L.h * S); var x = c.getContext("2d");
+  x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); if (bgs[cur]) { x.imageSmoothingQuality = "high"; x.drawImage(bgs[cur], 0, 0, c.width, c.height); } draw(x, L, state[cur], c.width / L.w, 0, 0, null); return c; }
+function toBlob(c, type, q) { return new Promise(function (res, rej) { c.toBlob(function (b) { b ? res(b) : rej(new Error("blob")); }, type, q); }); }
+function escX(s) { return String(s).replace(/[&<>"]/g, function (ch) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]; }); }
+function bgDataURL() { var im = bgs[cur], c = document.createElement("canvas"); c.width = im.naturalWidth; c.height = im.naturalHeight; c.getContext("2d").drawImage(im, 0, 0); return c.toDataURL("image/png"); }
+function buildSVG() { var L = LABELS[cur], st = state[cur], r = L.rule, o = [];
+  o.push('<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="' + L.mm[0] + 'mm" height="' + L.mm[1] + 'mm" viewBox="0 0 ' + L.w + ' ' + L.h + '">');
+  o.push('<image width="' + L.w + '" height="' + L.h + '" href="' + bgDataURL() + '"/>');
+  o.push('<line x1="' + r.x + '" y1="' + r.y1 + '" x2="' + r.x + '" y2="' + r.y2 + '" stroke="' + r.c + '" stroke-width="' + r.w + '"/>');
+  L.blocks.forEach(function (b0) { var b = eb(b0, st), lay = layout(L, b, st);
+    o.push('<g id="' + b.id + '" font-family="' + escX(b.font) + '" font-size="' + lay.size + '" fill="' + b.c + '" direction="' + b.dir + '">');
+    pieces(b, lay).forEach(function (p) {
+      /* في SVG: start/end تتبعان اتجاه النص، فنحوّل يمين/يسار بحسبه */
+      var anc = p.a === "center" ? "middle" : ((p.a === "right") === (b.dir === "rtl") ? "start" : "end");
+      o.push('<text x="' + p.x.toFixed(2) + '" y="' + p.y.toFixed(2) + '" text-anchor="' + anc + '" font-weight="' + (p.bold ? 700 : b.wt) + '" xml:space="preserve">' + escX(p.t) + '</text>'); });
+    o.push('</g>'); });
+  o.push('</svg>'); return o.join("\n"); }
+function make(fmt) { var L = LABELS[cur], S = 600 / 72;
+  if (fmt === "png") return toBlob(fullCanvas(S), "image/png");
+  if (fmt === "jpg") return toBlob(fullCanvas(S), "image/jpeg", 0.95);
+  if (fmt === "svg") return Promise.resolve(new Blob([buildSVG()], { type: "image/svg+xml" }));
+  var J = window.jspdf && window.jspdf.jsPDF; if (!J) return Promise.reject(new Error("pdf"));
+  var doc = new J({ unit: "mm", format: [L.mm[0], L.mm[1]], orientation: "landscape", compress: true });
+  doc.addImage(fullCanvas(S).toDataURL("image/jpeg", 0.95), "JPEG", 0, 0, L.mm[0], L.mm[1]); return Promise.resolve(doc.output("blob")); }
+function dialog(title, node, onYes) { $("dlgT").textContent = title; var b = $("dlgB"); b.textContent = ""; if (node) b.appendChild(node); $("dlgYes").hidden = !onYes; $("dlgYes").onclick = function () { $("dlg").close(); onYes && onYes(); }; $("dlg").showModal(); }
+$("dlgNo").addEventListener("click", function () { $("dlg").close(); });
+[].forEach.call(document.querySelectorAll("#dl button"), function (btn) { btn.addEventListener("click", function () {
+  var fmt = btn.dataset.fmt, old = btn.textContent; btn.disabled = true; btn.textContent = "يجهّز…";
+  var done = function () { btn.disabled = false; btn.textContent = old; };
+  document.fonts.ready.then(function () { return make(fmt); }).then(function (blob) {
+    var name = LABELS[cur].file + "." + fmt;
+    if (downloads) return downloads.save({ filename: name, data: blob }).then(function () { status("نزل الملف " + name, "ok"); }, function (e) { if (!e || e.code !== "declined") status("ما قدرنا ننزّل الملف هنا — جرّب صيغة ثانية أو افتح الصفحة من المتصفح.", "warn"); });
+    if (fmt === "png" || fmt === "jpg") { var im = new Image(); im.alt = name; im.src = URL.createObjectURL(blob); var p = document.createElement("p"); p.className = "hint"; p.textContent = "اضغط مطوّلًا على الصورة (أو بالزر الأيمن) ثم «حفظ الصورة»."; var w = document.createElement("div"); w.appendChild(im); w.appendChild(p); dialog(name, w); }
+    else { var q = document.createElement("p"); q.className = "hint"; q.textContent = "تنزيل هذه الصيغة غير متاح في هذا العرض. نزّل PNG أو JPG، أو افتح الصفحة وأنت مسجّل الدخول."; dialog("التنزيل غير متاح", q); }
+  }).catch(function () { status("تعذّر تجهيز الملف — حدّث الصفحة وجرّب مرة ثانية.", "warn"); }).then(done);
+}); });
+
+/* ── التبديل والبدء ── */
+function loadBg(id) { if (bgs[id]) return Promise.resolve(); return new Promise(function (res) { var im = new Image(); im.onload = function () { bgs[id] = im; res(); }; im.onerror = function () { status("تعذّر تحميل خلفية الملصق — حدّث الصفحة.", "warn"); res(); }; im.src = LABELS[id].bg; }); }
+function loadFonts(id) { var st = state[id];
+  return Promise.all(LABELS[id].blocks.map(function (b) { return ensureFont(st.f[b.id]); })).then(function () {
+    return Promise.all(LABELS[id].blocks.map(function (b0) { var b = eb(b0, st); return document.fonts.load(b.wt + " 20px " + b.font, st.t[b.id] || "ا").catch(function () { }); })
+      .concat(LABELS[id].blocks.filter(function (b) { return b.boldLabel; }).map(function (b0) { return document.fonts.load("700 20px " + eb(b0, st).font, "Exclusive").catch(function () { }); }))); }); }
+function select(id) { cur = id; active = null;
+  [].forEach.call(document.querySelectorAll("[data-label]"), function (b) { b.setAttribute("aria-pressed", String(b.dataset.label === id)); });
+  var L = LABELS[id]; $("dims").textContent = "المقاس: " + L.mm[0] + " × " + L.mm[1] + " مم"; buildFields(); render();
+  Promise.all([loadBg(id), loadFonts(id)]).then(render); }
+[].forEach.call(document.querySelectorAll("[data-label]"), function (b) { b.addEventListener("click", function () { select(b.dataset.label); }); });
+function setView(v) { if (view === v) return; view = v;
+  [].forEach.call(document.querySelectorAll("[data-view]"), function (x) { x.setAttribute("aria-pressed", String(x.dataset.view === v)); }); render(); }
+[].forEach.call(document.querySelectorAll("[data-view]"), function (b) { b.addEventListener("click", function () { setView(b.dataset.view); }); });
+$("reset").addEventListener("click", function () { var p = document.createElement("p"); p.className = "hint"; p.textContent = "ترجع كل نصوص وأحجام وخطوط هذا الملصق للنسخة الأصلية، وتُحفظ على الجميع.";
+  dialog("ترجّع نصوص الملصق للأصل؟", p, function () { state[cur] = defaults(cur); buildFields(); touch(); }); });
+window.addEventListener("resize", render);
+document.fonts.addEventListener && document.fonts.addEventListener("loadingdone", render);
+select(cur);
+
+if (window.claude && window.claude.use) {
+  window.claude.use("downloads").then(function (d) { downloads = d; if (!d) $("dlNote").textContent = "في هذا العرض: PNG و JPG تظهر كصورة تحفظها بالضغط المطوّل."; });
+  window.claude.use("db").then(function (d) { if (!d) { $("saveNote").textContent = "التعديلات تُحفظ على هذا الجهاز فقط (سجّل الدخول لتُحفظ للجميع)."; return; }
+    db = d; $("saveNote").textContent = "التعديلات تُحفظ تلقائيًا ويراها كل من يفتح الصفحة.";
+    Object.keys(LABELS).forEach(function (id) { try { d.doc("labels/" + id).onSnapshot(function (s) { if (s.exists) applyRemote(id, s.data()); }, function () { }); } catch (_e) { } }); });
+} else { $("saveNote").textContent = "التعديلات تُحفظ على هذا الجهاز.";
+  /* خارج Claude: تنزيل عادي من المتصفح */
+  downloads = { save: function (o) { var u = URL.createObjectURL(o.data), a = document.createElement("a"); a.href = u; a.download = o.filename; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 60000); return Promise.resolve(); } }; }
+})();
+</script>
+
+</body></html>
