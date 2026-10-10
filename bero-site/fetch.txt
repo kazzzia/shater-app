@@ -2,3 +2,5 @@ shot-treatment.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5
 shot-straightener.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074333_4cd5c146-fe36-459e-826d-1c5a17c90301.png
 botanical.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074619_da60f05f-2de2-4f3c-8eb6-225b62141f71.png
 duo.png https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074620_f7558c72-b8c2-47eb-99d6-8f3039b4b003.png
+treatment.glb https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074600_aafbe354-3e7a-4d55-bf9e-f5b406eb4088.glb
+straightener.glb https://d8j0ntlcm91z4.cloudfront.net/user_3IrTtOGZjUOrQox4kD5IVSq2V5y/hf_20261010_074604_2bce5e13-8e56-4319-b17d-edbd86ccee3a.glb
