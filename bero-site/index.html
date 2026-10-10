@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>BERO · معالج ومنعم الشعر</title>
 <meta name="description" content="معالج بيرو يوقف التساقط ويهدّي النفشة لأكثر من 6 شهور، ومنعم بيرو للشعر شديد الخشونة. شوفي العبوة بالـ 3D واطلبي الآن.">
-<meta name="theme-color" content="#a3124f">
+<meta name="theme-color" content="#6e2b3f">
 <meta property="og:title" content="BERO · معالج التساقط والنفشة">
 <meta property="og:description" content="يوقف التساقط، يهدّي النفشة، ويعطي نعومة وحيوية طبيعية لأكثر من 6 شهور.">
 <meta property="og:image" content="assets/duo.webp">
@@ -18,17 +18,18 @@
 /* ملصق بيرو: كتابة ضخمة أولًا ثم العبوة صغيرة ومثبّتة تحتها. لون واحد للخلفية لكل منتج، ولون مضيء واحد يقطعها.
    المعالج = توت/خوخي، المنعّم = بنفسجي/زبدي. بدون ظلال، أزرار كبسولية، فواصل منقّطة، وزهرة خطّية كعلامة مائية. */
 :root{
-  --berry:#a3124f; --berry-deep:#74093a; --berry-night:#420520; --peach:#ffb48c; --coral:#ff5d73;
-  --plum:#6b2bb3; --plum-deep:#461a7d; --plum-night:#230b44; --butter:#ffe27a; --lilac:#d9c4ff;
-  --cream:#fff4ec;
+  /* لوحة هادئة متناسقة مع معدن العبوة (روز قولد/شامبين) */
+  --rose:#6e2b3f; --rose-deep:#5c2436; --rose-night:#3f1826; --champagne:#f1c9b5; --blush:#ead3c9; --dusty:#c27a87;
+  --plum:#4b3b64; --plum-deep:#3b2e50; --plum-night:#261d36; --gold:#e9d39f; --lilac:#d5cae6;
+  --cream:#fbf2ec;
   /* النبرة الحالية — تتبدّل حسب المنتج المعروض */
-  --canvas:var(--berry); --card:var(--berry-deep); --deep:var(--berry-night); --glow:var(--peach); --soft:#ffd9c6;
-  --ink-on-glow:#4a0622;
+  --canvas:var(--rose); --card:var(--rose-deep); --deep:var(--rose-night); --glow:var(--champagne); --soft:var(--blush);
+  --hot:var(--dusty); --ink-on-glow:#4a1a28;
   --font:"Alexandria","Tajawal","Segoe UI",Tahoma,sans-serif;
   --pill:9999px; --r:6px;
   color-scheme:dark;
 }
-[data-tone="plum"]{ --canvas:var(--plum); --card:var(--plum-deep); --deep:var(--plum-night); --glow:var(--butter); --soft:var(--lilac); --ink-on-glow:#2a0b52 }
+[data-tone="plum"]{ --canvas:var(--plum); --card:var(--plum-deep); --deep:var(--plum-night); --glow:var(--gold); --soft:var(--lilac); --hot:var(--gold); --ink-on-glow:#2c2140 }
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;-webkit-text-size-adjust:100%;text-size-adjust:100%}
 body{margin:0;background:var(--canvas);color:var(--cream);font-family:var(--font);font-weight:300;font-size:16px;line-height:1.7;
@@ -57,7 +58,7 @@ nav.links{display:flex;gap:6px;flex-wrap:wrap}
 nav.links a{text-decoration:none;font-size:14px;font-weight:500;padding:8px 16px;border-radius:var(--pill);border:1px solid color-mix(in srgb,var(--cream) 30%,transparent)}
 nav.links a:hover{border-color:var(--glow);color:var(--glow)}
 nav.links a.cta{background:var(--glow);border-color:var(--glow);color:var(--ink-on-glow)}
-@media (max-width:760px){ nav.links a:not(.cta){display:none} .brandrow b{display:none} }
+@media (max-width:760px){ nav.links a:not(.cta){display:none} .brandrow b{display:none} .top{position:relative} }
 
 /* ── العلامة المائية ── */
 .botanic{position:absolute;pointer-events:none;opacity:.13;width:min(900px,120vw);aspect-ratio:1;background:url(assets/botanical.webp) center/contain no-repeat;
@@ -67,7 +68,7 @@ nav.links a.cta{background:var(--glow);border-color:var(--glow);color:var(--ink-
 /* ── الواجهة ── */
 .hero{position:relative;overflow:hidden;padding-block:clamp(24px,5vw,64px) 0}
 .hero .botanic{top:-12%;left:50%;translate:-50% 0}
-.bero{position:relative;font-weight:200;line-height:.8;font-size:clamp(108px,27vw,400px);letter-spacing:.14em;direction:ltr;text-align:center;margin:0;
+.bero{position:relative;font-weight:200;line-height:.8;font-size:clamp(60px,22vw,400px);letter-spacing:.14em;direction:ltr;text-align:center;margin:0;
   padding-inline-start:.14em;white-space:nowrap}
 .bero::before,.bero::after{content:"";position:absolute;inset-inline:2%;height:.07em;background:var(--deep);z-index:-1}
 .bero::before{top:38%}.bero::after{top:52%}
@@ -76,13 +77,13 @@ nav.links a.cta{background:var(--glow);border-color:var(--glow);color:var(--ink-
 @keyframes rise{from{transform:translateY(.35em) rotate(4deg)}to{transform:none}}
 .claim{text-align:center;margin-top:clamp(18px,4vw,40px)}
 .claim .thin{display:block;font-weight:200;font-size:clamp(38px,7vw,92px);line-height:1.05}
-.claim .heavy{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:.18em;font-weight:800;font-size:clamp(46px,11vw,168px);line-height:1;margin-block:.12em}
+.claim .heavy{display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:.18em;font-weight:800;font-size:clamp(44px,9.5vw,150px);line-height:1;margin-block:.12em}
 .claim .heavy mark{background:var(--deep);color:var(--cream);padding:.02em .16em .1em;border-radius:2px}
 .claim .heavy i{font-style:normal;font-weight:200}
 .claim .for{display:block;font-weight:200;font-size:clamp(30px,5.4vw,74px);line-height:1.15}
 .claim .for b{font-weight:800;color:var(--glow)}
 .hero-ctas{display:flex;justify-content:center;gap:12px;flex-wrap:wrap;margin-top:clamp(24px,4vw,40px)}
-.duo{position:relative;width:min(560px,92%);margin:clamp(28px,5vw,56px) auto 0;animation:float 6s ease-in-out infinite}
+.duo{position:relative;width:min(400px,66%);margin:clamp(28px,5vw,56px) auto 0;animation:float 6s ease-in-out infinite}
 @keyframes float{50%{transform:translateY(-12px)}}
 
 /* ── الشريط المتحرك ── */
@@ -101,6 +102,36 @@ nav.links a.cta{background:var(--glow);border-color:var(--glow);color:var(--ink-
 .quote .nots{display:flex;justify-content:center;flex-wrap:wrap;gap:10px;margin-top:28px}
 .quote .nots span{border:2px solid var(--cream);border-radius:var(--pill);padding:10px 22px;font-weight:500;font-size:clamp(15px,1.7vw,19px)}
 .quote .nots span::before{content:"بدون ";color:var(--glow);font-weight:800}
+
+/* ── تحوّل الشعر مع التمرير ── */
+.morph{position:relative;height:320vh;height:320svh}
+.morph .pin{position:sticky;top:0;height:100vh;height:100svh;display:grid;align-items:center;overflow:hidden}
+.morph .inner{display:grid;grid-template-columns:1fr;gap:clamp(10px,2vw,28px);align-items:center;justify-items:center;text-align:center}
+@media (min-width:900px){ .morph .inner{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);text-align:start;justify-items:stretch} }
+.morph .say{position:relative;display:grid}
+.morph .say > *{grid-area:1/1}
+.morph .state{font-weight:800;font-size:clamp(38px,6.4vw,104px);line-height:.95;margin:0;transition:opacity .35s,transform .35s;text-wrap:balance}
+.morph .state small{display:block;font-weight:200;font-size:.42em;margin-bottom:.2em;color:var(--soft)}
+.morph .state.after{color:var(--glow)}
+.morph[data-half="0"] .after,.morph[data-half="1"] .before{opacity:0;transform:translateY(18px)}
+.frame{position:relative;height:min(62svh,620px);aspect-ratio:720/966;max-width:88vw;border-radius:var(--r);overflow:hidden;background:var(--card)}
+@media (min-width:900px){ .frame{height:min(78svh,760px)} }
+.frame canvas{position:absolute;inset:0;width:100%;height:100%;display:block}
+.iron{position:absolute;inset-inline:0;height:3px;top:8%;background:var(--glow);box-shadow:0 0 18px 4px color-mix(in srgb,var(--glow) 70%,transparent),0 0 60px 10px color-mix(in srgb,var(--glow) 35%,transparent);
+  will-change:transform;pointer-events:none}
+.iron::before,.iron::after{content:"";position:absolute;top:-9px;width:22px;height:21px;border-radius:5px;background:var(--cream)}
+.iron::before{inset-inline-start:-4px}.iron::after{inset-inline-end:-4px}
+.frame .tagb{position:absolute;top:12px;inset-inline-start:12px;font-size:12px;font-weight:700;background:var(--deep);border-radius:var(--pill);padding:4px 12px}
+.meter{display:flex;flex-direction:column;gap:10px;align-items:center}
+@media (min-width:900px){ .meter{align-items:flex-start} }
+.meter .pct{font-weight:900;font-size:clamp(64px,10vw,170px);line-height:.85;color:var(--glow);direction:ltr;unicode-bidi:isolate;font-variant-numeric:tabular-nums}
+.meter .lbl{font-weight:500;font-size:clamp(14px,1.4vw,18px);color:var(--soft)}
+.meter input[type=range]{width:min(320px,80vw);accent-color:var(--glow)}
+.morph .cue{font-size:13px;font-weight:500;letter-spacing:.06em;color:var(--soft);display:flex;gap:8px;align-items:center}
+.morph .cue svg{animation:bob 1.4s ease-in-out infinite}
+@keyframes bob{50%{transform:translateY(5px)}}
+@media (max-width:899px){ .meter .lbl,.morph .cue{display:none} .morph .inner{gap:8px} .meter{flex-direction:row;gap:14px} .meter .pct{font-size:56px}
+  .morph .pin{padding-block:14px} .meter input[type=range]{width:min(200px,44vw)} .meter{flex-wrap:wrap;justify-content:center} .morph .state{font-size:clamp(26px,7.4vw,40px)} .frame{height:min(54svh,560px)} }
 
 /* ── المنتج ── */
 .product{position:relative;overflow:hidden;padding-block:clamp(56px,8vw,110px)}
@@ -127,8 +158,7 @@ nav.links a.cta{background:var(--glow);border-color:var(--glow);color:var(--ink-
 .stat span{font-size:13px;font-weight:500;color:var(--soft)}
 .badges{display:flex;flex-wrap:wrap;gap:8px;margin-top:22px}
 .badge{border-radius:var(--pill);padding:8px 16px;font-size:14px;font-weight:700;background:var(--deep);display:inline-flex;gap:8px;align-items:center}
-.badge.hot{background:var(--coral);color:#fff}
-[data-tone="plum"] .badge.hot{background:var(--butter);color:var(--ink-on-glow)}
+.badge.hot{background:var(--hot);color:var(--ink-on-glow)}
 .ingr{margin-top:26px}
 .ingr h3{margin:0 0 10px;font-size:15px;font-weight:500;color:var(--soft)}
 .chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -161,14 +191,14 @@ nav.links a.cta{background:var(--glow);border-color:var(--glow);color:var(--ink-
 .order .botanic{right:-20%;top:-25%}
 .price{display:grid;grid-template-columns:1fr;gap:14px;align-items:stretch;margin-top:10px}
 @media (min-width:860px){ .price{grid-template-columns:1.2fr 1fr} }
-.pcard{background:var(--cream);color:#2b0614;border-radius:var(--r);padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px}
+.pcard{background:var(--cream);color:#3a1520;border-radius:var(--r);padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:14px}
 .pcard .row{display:flex;align-items:center;gap:clamp(14px,3vw,30px);flex-wrap:wrap}
-.pcard .was{font-weight:800;font-size:clamp(36px,5vw,60px);color:#9b8a91;text-decoration:line-through;text-decoration-thickness:4px;direction:ltr;unicode-bidi:isolate}
-.pcard .now{font-weight:900;font-size:clamp(64px,10vw,128px);line-height:.9;color:var(--berry);direction:ltr;unicode-bidi:isolate}
+.pcard .was{font-weight:800;font-size:clamp(36px,5vw,60px);color:#a8979c;text-decoration:line-through;text-decoration-thickness:4px;direction:ltr;unicode-bidi:isolate}
+.pcard .now{font-weight:900;font-size:clamp(64px,10vw,128px);line-height:.9;color:var(--rose);direction:ltr;unicode-bidi:isolate}
 .pcard .cur{font-size:.32em;font-weight:700;margin-inline-start:.2em}
-.pcard .tam{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#ffd27a,#ffb2a0);border-radius:var(--r);padding:12px 16px;font-weight:500}
+.pcard .tam{display:flex;align-items:center;gap:12px;background:linear-gradient(90deg,#f3dcc2,#f1c9b5);border-radius:var(--r);padding:12px 16px;font-weight:500}
 .pcard .tam b{font-weight:900;font-size:28px;direction:ltr;unicode-bidi:isolate}
-.pcard .pill.fill{background:var(--berry);border-color:var(--berry);color:#fff;align-self:flex-start}
+.pcard .pill.fill{background:var(--rose);border-color:var(--rose);color:var(--cream);align-self:flex-start}
 .contact{background:var(--card);border-radius:var(--r);padding:clamp(20px,3vw,32px);display:flex;flex-direction:column;gap:12px}
 .contact h3{margin:0;font-size:20px;font-weight:800}
 .contact .line{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;border-bottom:2px dotted color-mix(in srgb,var(--glow) 50%,transparent);padding-bottom:10px;font-size:15px}
@@ -215,7 +245,7 @@ footer .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
         <a class="pill fill" href="#order">اطلبي الآن</a>
         <a class="pill ghost" href="#treatment">شوفي العبوة 3D</a>
       </div>
-      <img class="duo" src="assets/duo.webp" width="1200" height="900" alt="عبوتا بيرو: معالج ومنعم الشعر ومنعم الشعر شديد الخشونة">
+      <img class="duo" src="assets/duo.webp" width="903" height="1308" alt="عبوتا بيرو: معالج ومنعم الشعر ومنعم الشعر شديد الخشونة">
     </div>
   </section>
 
@@ -234,6 +264,29 @@ footer .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
     </div>
   </section>
 
+  <!-- تحوّل الشعر: يتحرك مع التمرير -->
+  <section class="morph" id="morph" data-half="0" data-tone-at="berry" aria-label="من شعر مجعّد إلى شعر ناعم">
+    <div class="pin">
+      <div class="wrap inner">
+        <div class="say">
+          <p class="state before"><small>قبل بيرو</small>نفشة وتجعيد وتطاير</p>
+          <p class="state after"><small>بعد بيرو</small>ناعم ولمّاع ومرتّب</p>
+        </div>
+        <div class="frame">
+          <canvas id="hair" width="720" height="966" role="img" aria-label="شعر مجعّد يتحوّل إلى شعر ناعم ولامع"></canvas>
+          <div class="iron" id="iron" aria-hidden="true"></div>
+          <span class="tagb" id="tagb">قبل</span>
+        </div>
+        <div class="meter">
+          <span class="pct" id="pct">0%</span>
+          <span class="lbl">نعومة</span>
+          <input type="range" id="scrub" min="0" max="100" value="0" aria-label="قارني قبل وبعد">
+          <span class="cue"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 4v16M6 14l6 6 6-6"/></svg>اسحبي الصفحة لتحت</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <hr class="dots">
 
   <!-- المنتج الأول -->
@@ -247,8 +300,8 @@ footer .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
         <div class="stage3d">
           <span class="ml">150 ml</span>
           <model-viewer id="mv-treatment" src="assets/treatment.glb" poster="assets/shot-treatment.webp" alt="عبوة معالج بيرو ثلاثية الأبعاد"
-            camera-controls auto-rotate auto-rotate-delay="0" rotation-per-second="22deg" interaction-prompt="none" disable-zoom disable-pan
-            touch-action="pan-y" camera-orbit="20deg 82deg 105%" field-of-view="26deg" environment-image="neutral" tone-mapping="neutral"
+            camera-controls interaction-prompt="none" disable-zoom disable-pan
+            touch-action="pan-y" camera-orbit="0deg 82deg 105%" field-of-view="26deg" environment-image="neutral" tone-mapping="neutral"
             exposure="1.08" shadow-intensity="0.9" shadow-softness="1" loading="lazy"></model-viewer>
           <span class="hint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2M21 12a9 9 0 0 1-15.5 6.2"/><path d="M18 2v4h-4M6 22v-4h4"/></svg>اسحبي لتدوير العبوة</span>
         </div>
@@ -295,8 +348,8 @@ footer .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
         <div class="stage3d">
           <span class="ml">150 ml</span>
           <model-viewer id="mv-straightener" src="assets/straightener.glb" poster="assets/shot-straightener.webp" alt="عبوة منعم بيرو ثلاثية الأبعاد"
-            camera-controls auto-rotate auto-rotate-delay="0" rotation-per-second="-22deg" interaction-prompt="none" disable-zoom disable-pan
-            touch-action="pan-y" camera-orbit="-20deg 82deg 105%" field-of-view="26deg" environment-image="neutral" tone-mapping="neutral"
+            camera-controls interaction-prompt="none" disable-zoom disable-pan
+            touch-action="pan-y" camera-orbit="0deg 82deg 105%" field-of-view="26deg" environment-image="neutral" tone-mapping="neutral"
             exposure="1.08" shadow-intensity="0.9" shadow-softness="1" loading="lazy"></model-viewer>
           <span class="hint"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 12a9 9 0 0 1 15.5-6.2M21 12a9 9 0 0 1-15.5 6.2"/><path d="M18 2v4h-4M6 22v-4h4"/></svg>اسحبي لتدوير العبوة</span>
         </div>
@@ -436,22 +489,81 @@ footer .fine{display:flex;justify-content:space-between;flex-wrap:wrap;gap:10px;
   tabs.s.addEventListener("click", function () { show("s"); });
   document.querySelectorAll("[data-tab]").forEach(function (a) { a.addEventListener("click", function () { show(a.dataset.tab); }); });
 
-  /* العبوة تميل مع التمرير */
   var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-  if (!reduce) {
-    var mvs = [document.getElementById("mv-treatment"), document.getElementById("mv-straightener")];
-    var ticking = false;
-    window.addEventListener("scroll", function () {
-      if (ticking) return; ticking = true;
-      requestAnimationFrame(function () {
-        ticking = false;
-        mvs.forEach(function (mv) {
-          var r = mv.getBoundingClientRect(), p = (r.top + r.height / 2) / innerHeight - .5;
-          if (Math.abs(p) < 1) mv.style.transform = "translateY(" + (p * -40).toFixed(1) + "px) rotate(" + (p * -6).toFixed(2) + "deg)";
-        });
-      });
-    }, { passive: true });
+
+  /* ── الشعر: إطارات الفيديو تُرسم حسب موضع التمرير ── */
+  var N = 61, frames = [], cv = document.getElementById("hair"), ctx = cv.getContext("2d");
+  var morph = document.getElementById("morph"), iron = document.getElementById("iron"), pct = document.getElementById("pct");
+  var tagb = document.getElementById("tagb"), scrub = document.getElementById("scrub"), cur = -1, manual = null;
+  function src(i) { return "assets/hair/f" + String(i + 1).padStart(3, "0") + ".webp"; }
+  function draw(i) {
+    for (var d = 0; d < N; d++) {           /* أقرب إطار محمّل */
+      var j = [i - d, i + d].filter(function (k) { return k >= 0 && k < N && frames[k] && frames[k].complete && frames[k].naturalWidth; })[0];
+      if (j !== undefined) { ctx.drawImage(frames[j], 0, 0, cv.width, cv.height); return; }
+    }
   }
+  function load(i) { if (frames[i]) return; var im = new Image(); im.decoding = "async"; im.src = src(i); im.onload = function () { if (i === cur) draw(i); }; frames[i] = im; }
+  load(0); load(N - 1);
+  frames[0].onload = function () { draw(cur < 0 ? 0 : cur); };
+  var preloaded = false;
+  function preload() { if (preloaded) return; preloaded = true; for (var i = 0; i < N; i++) load(i); }
+  if ("IntersectionObserver" in window) new IntersectionObserver(function (es) { if (es[0].isIntersecting) preload(); }, { rootMargin: "800px" }).observe(morph);
+  else preload();
+  function setP(p) {
+    p = Math.min(1, Math.max(0, p));
+    var i = Math.round(p * (N - 1));
+    if (i !== cur) { cur = i; draw(i); }
+    iron.style.transform = "translateY(" + (p * cv.clientHeight * .84).toFixed(1) + "px)";
+    iron.style.opacity = p > .985 ? 0 : 1;
+    pct.textContent = Math.round(p * 100) + "%";
+    tagb.textContent = p < .5 ? "قبل" : "بعد";
+    morph.dataset.half = p < .5 ? "0" : "1";
+    if (document.activeElement !== scrub) scrub.value = Math.round(p * 100);
+  }
+  function morphProgress() {
+    var r = morph.getBoundingClientRect(), span = r.height - innerHeight;
+    return span > 0 ? -r.top / span : 0;
+  }
+  scrub.addEventListener("input", function () {
+    /* المؤشر يحرّك الصفحة لنفس الموضع حتى يبقى التمرير والمؤشر متطابقين */
+    var r = morph.getBoundingClientRect(), span = r.height - innerHeight, top = scrollY + r.top;
+    preload(); window.scrollTo({ top: top + span * (scrub.value / 100), behavior: "auto" });
+    setP(scrub.value / 100);
+  });
+
+  /* ── العبوات: تتمايل حول الواجهة، والسحب يوقفها لحظة ── */
+  var mvs = [
+    { el: document.getElementById("mv-treatment"), front: 0, dir: 1 },
+    { el: document.getElementById("mv-straightener"), front: 0, dir: -1 }
+  ];
+  mvs.forEach(function (m) {
+    m.hold = 0;
+    m.el.addEventListener("camera-change", function (e) { if (e.detail && e.detail.source === "user-interaction") m.hold = performance.now() + 3500; });
+  });
+  var t0 = performance.now();
+  function frame(now) {
+    var t = (now - t0) / 1000;
+    mvs.forEach(function (m) {
+      if (now < m.hold) return;
+      var r = m.el.getBoundingClientRect();
+      if (r.bottom < 0 || r.top > innerHeight) return;
+      var sp = (r.top + r.height / 2) / innerHeight - .5;           /* -0.5..0.5 أثناء المرور */
+      var theta = m.front + m.dir * (Math.sin(t * .7) * 26 + sp * 70);
+      var phi = 82 + Math.sin(t * .5) * 4;
+      m.el.cameraOrbit = theta.toFixed(1) + "deg " + phi.toFixed(1) + "deg 105%";
+    });
+    if (!reduce) requestAnimationFrame(frame);
+  }
+  if (!reduce) requestAnimationFrame(frame);
+
+  var ticking = false;
+  function onScroll() {
+    if (ticking) return; ticking = true;
+    requestAnimationFrame(function () { ticking = false; setP(morphProgress()); });
+  }
+  window.addEventListener("scroll", onScroll, { passive: true });
+  window.addEventListener("resize", onScroll);
+  setP(morphProgress());
 })();
 </script>
 </body>
