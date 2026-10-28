@@ -40,6 +40,14 @@ const Set<String> kProductIds = {
   'sa.shatarah.monthly5', 'sa.shatarah.yearly5',
 };
 
+Future<void> enterShaterFullscreen() async {
+  if (Platform.isAndroid) {
+    await const MethodChannel('sa.shatarah/display').invokeMethod<void>('immersive');
+  } else {
+    await SystemChrome.setEnabledSystemUIMode(SystemUiMode.immersiveSticky);
+  }
+}
+
 void main() {
   WidgetsFlutterBinding.ensureInitialized();
   // StoreKit 2 هو الافتراضي في in_app_purchase_storekit 0.4+: المعاملة تصل
@@ -47,6 +55,9 @@ void main() {
   // (صارت مهجورة) — لكن لو رجعت الحزمة يومًا إلى StoreKit 1 فسيتغيّر شكل
   // serverVerificationData إلى إيصال، وسيرفضه api/_iap.js برمز jws-shape.
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
+  // 🖥️ (فارس ١٢ أكتوبر: «شيل الوقت والشبكة، خلّ التطبيق ياخذ راحته بشكل كامل، ما في شي فوقه» · وبالأندرويد
+  // «الصفحة تبقى تحت خيارات الجوال») شاشة كاملة: شريط الحالة وأزرار النظام مخفية، وتظهر بسحبة من الحافة ثم تختفي.
+  unawaited(enterShaterFullscreen());
   runApp(const ShaterApp());
 }
 
@@ -66,8 +77,34 @@ class ShaterShell extends StatefulWidget {
   State<ShaterShell> createState() => _ShaterShellState();
 }
 
-class _ShaterShellState extends State<ShaterShell> {
+class _ShaterShellState extends State<ShaterShell> with WidgetsBindingObserver {
   late final WebViewController _web;
+
+  Timer? _systemUiRestore;
+
+  @override
+  void didChangeMetrics() {
+    if (!Platform.isAndroid) return;
+    _systemUiRestore?.cancel();
+    final views = WidgetsBinding.instance.platformDispatcher.views;
+    if (views.isEmpty || views.first.viewInsets.bottom > 0) return;
+    // Android requires at least one second after the keyboard closes.
+    _systemUiRestore = Timer(const Duration(milliseconds: 1100), () {
+      if (mounted && WidgetsBinding.instance.lifecycleState == AppLifecycleState.resumed) {
+        unawaited(enterShaterFullscreen());
+      }
+    });
+  }
+
+  // الرجوع من الخلفية أو من لوحة المفاتيح/نافذة النظام يعيد الأشرطة — نخفيها من جديد
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    _systemUiRestore?.cancel();
+    if (state == AppLifecycleState.resumed) {
+      unawaited(enterShaterFullscreen());
+    }
+  }
+
   bool _loading = true;
   bool _offline = false;
   Timer? _watchdog; // لو الصفحة علقت ٢٥ ثانية نعرض «أعد المحاولة» بدل بياض أبدي
@@ -386,6 +423,7 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
   @override
   void initState() {
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
     // ⚠️ إعدادات المنصة قبل الإنشاء — الصوت التلقائي على iOS يتقرر هنا
     // ولا يمكن تفعيله بعد إنشاء المتحكم
     late final PlatformWebViewControllerCreationParams params;
@@ -393,6 +431,8 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
+        // 📴 (٢٨ أكتوبر) قيد النطاقات المربوطة (limitsNavigationsToAppBoundDomains + WKAppBoundDomains) أُزيل من هذا البناء:
+        // يمنع أي صفحة من نطاق آخر داخل الغلاف ولم يُجرَّب على جهاز. الموقع يتحدّث بلا عامل خدمة (مجرَّب) — يُعاد مع تجربة على آيفون.
       );
     } else {
       params = const PlatformWebViewControllerCreationParams();
@@ -475,6 +515,8 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
 
   @override
   void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    _systemUiRestore?.cancel();
     _watchdog?.cancel();
     _iapSub?.cancel();
     _sttStop();
@@ -501,7 +543,18 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
       // شاشة كاملة بلا أي شريط علوي — الموقع يمتد تحت النتش
       // (viewport-fit=cover موجود في الموقع ويتكفل بمسافات الأمان)
       body: Stack(children: [
-          WebViewWidget(controller: _web),
+          // أندرويد: WebView القديم لا يبلّغ الموقع بمسافات الأمان (env(safe-area-inset-*) = صفر)، فكان المحتوى يدخل تحت
+          // الكاميرا وأزرار النظام. نحشوه هنا بالمسافة الفعلية (صفر حين تكون الأشرطة مخفية، وفتحة الكاميرا دائمًا).
+          // iOS يبقى كما هو: الموقع يتكفّل بها عبر viewport-fit=cover.
+          Platform.isAndroid
+              ? SafeArea(child: WebViewWidget.fromPlatformCreationParams(
+                  params: AndroidWebViewWidgetCreationParams.fromPlatformWebViewWidgetCreationParams(
+                    PlatformWebViewWidgetCreationParams(controller: _web.platform),
+                    // Opt-in comparison only; retain the shipping default until device profiling.
+                    displayWithHybridComposition: const bool.fromEnvironment('SHATER_ANDROID_HYBRID'),
+                  ),
+                ))
+              : WebViewWidget(controller: _web),
           if (_loading)
             const Center(
               child: CircularProgressIndicator(color: Color(0xFFFF6F1E)),
