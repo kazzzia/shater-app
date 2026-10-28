@@ -74,8 +74,9 @@ workflows:
         script: xcode-project use-profiles
       - name: Build IPA
         script: |
+          # (٢٨ أكتوبر) عدّاد كودماجيك وصل ٢١ وآخر بناء في App Store ٢٢ — آبل ترفض الرقم الأصغر، فنزيد ١٠٠ (يبقى تصاعديًا)
           flutter build ipa --release \
-            --build-number=$PROJECT_BUILD_NUMBER \
+            --build-number=$((PROJECT_BUILD_NUMBER + 100)) \
             --export-options-plist=/Users/builder/export_options.plist
     artifacts:
       - build/ios/ipa/*.ipa
