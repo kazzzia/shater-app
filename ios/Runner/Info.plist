@@ -72,6 +72,8 @@
 	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
+	<key>NSCameraUsageDescription</key>
+	<string>نحتاج الكاميرا عشان تمسح باركود العائلة وتربط جهاز طفلك</string>
 	<key>NSMicrophoneUsageDescription</key>
 	<string>نحتاج المايك عشان نسمع تسميع طفلك وأسئلته الصوتية</string>
 	<key>NSSpeechRecognitionUsageDescription</key>

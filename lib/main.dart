@@ -461,6 +461,12 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
       (_web.platform as WebKitWebViewController)
           .setAllowsBackForwardNavigationGestures(true);
     }
+    // 📷 (فارس ٢٩ أكتوبر: «امسح الكود… يقفل التطبيق») — 1.0.2 بلا NSCameraUsageDescription فكان iOS يقتل التطبيق عند فتح الكاميرا.
+    // الإذن الآن في Info.plist، ووجود ShaterCam يقول للموقع (SH_CAM_OFF في app.html) إن المسح متاح.
+    // أندرويد بلا إذن كاميرا وقت التشغيل بعد ⟵ لا ShaterCam ويبقى «اكتب الكود».
+    if (Platform.isIOS) {
+      _web.addJavaScriptChannel('ShaterCam', onMessageReceived: (_) {});
+    }
     _web
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
       ..setBackgroundColor(const Color(0xFFF4F7FC)) // أرضية التطبيق (theme_pomo) — لا وميض أبيض
