@@ -38,6 +38,8 @@ dependencies:
   # + إعدادات أندرويد (نفسه). الإصدارات تُحل من pub بلا تثبيت أدنى صارم.
   webview_flutter: ^4.9.0
   webview_flutter_wkwebview: ^3.16.0
+  # روابط خارج shatarah.sa (واتساب…) تُفتح في تطبيقها — النطاقات المربوطة في iOS تمنع فتحها داخل الغلاف
+  url_launcher: ^6.3.0
   webview_flutter_android: ^4.1.0
   speech_to_text: ^7.4.0
   # 🍎🤖 دفع المتجرين — شرطُ نشرٍ لا خيار: آبل (3.1.1) وجوجل تمنعان أي دفعٍ
@@ -71,6 +73,9 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
+  # توتي في شاشة الفتح (نفس media/buddy/front.webp في الموقع)
+  assets:
+    - assets/totti.webp
 
   # To add assets to your application, add an assets section, like this:
   # assets:

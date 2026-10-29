@@ -64,6 +64,12 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<!-- 📴 (٢٩ أكتوبر) النطاقات المربوطة: بلاها لا يشغّل WKWebView عامل الخدمة (sw.js) فلا يفتح التطبيق بلا إنترنت. مع limitsNavigationsToAppBoundDomains في lib/main.dart -->
+	<key>WKAppBoundDomains</key>
+	<array>
+		<string>shatarah.sa</string>
+		<string>www.shatarah.sa</string>
+	</array>
 	<key>ITSAppUsesNonExemptEncryption</key>
 	<false/>
 	<key>NSMicrophoneUsageDescription</key>

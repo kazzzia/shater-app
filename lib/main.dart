@@ -21,12 +21,19 @@ import 'package:in_app_purchase_android/in_app_purchase_android.dart';
 import 'package:timezone/data/latest_all.dart' as tzdata;
 import 'package:timezone/timezone.dart' as tz;
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'package:url_launcher/url_launcher.dart';
 import 'package:webview_flutter/webview_flutter.dart';
 import 'package:webview_flutter_wkwebview/webview_flutter_wkwebview.dart';
 import 'package:webview_flutter_android/webview_flutter_android.dart';
 
 // ?native=ios|android: الموقع يعرف أنه داخل التطبيق (دفع المتاجر · إخفاء ما لا يُسمح به داخل التطبيقات)
-final String kHome = 'https://shatarah.sa/app?native=${Platform.isIOS ? 'ios' : 'android'}';
+// SHATER_HOME لبناء تجربة فقط (المحاكي على خادمٍ محلي) — الإصدار يُبنى بلاه
+const String _homeOverride = String.fromEnvironment('SHATER_HOME');
+final String kHome = _homeOverride.isNotEmpty
+    ? '$_homeOverride/app?native=${Platform.isIOS ? 'ios' : 'android'}'
+    : 'https://shatarah.sa/app?native=${Platform.isIOS ? 'ios' : 'android'}';
+// نطاقات الموقع داخل الغلاف — نفسها WKAppBoundDomains في ios/Runner/Info.plist. غيرها يُفتح خارج التطبيق.
+final Set<String> kAppHosts = {'shatarah.sa', 'www.shatarah.sa', if (_homeOverride.isNotEmpty) Uri.parse(_homeOverride).host};
 
 // 🍎 معرّفات منتجات الاشتراك — نفسها في App Store Connect وGoogle Play.
 // أي منتج جديد يُضاف هنا وفي api/_iap.js (PRODUCTS) معًا، وإلا رفضه الخادم.
@@ -106,6 +113,7 @@ class _ShaterShellState extends State<ShaterShell> with WidgetsBindingObserver {
   }
 
   bool _loading = true;
+  int _progress = 0; // ٠–١٠٠ من WebView — يملأ شريط شاشة الفتح
   bool _offline = false;
   Timer? _watchdog; // لو الصفحة علقت ٢٥ ثانية نعرض «أعد المحاولة» بدل بياض أبدي
   String? _jsErr; // آخر خطأ من الموقع — يظهر بشريط صغير ليسهل التبليغ
@@ -431,8 +439,10 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
       params = WebKitWebViewControllerCreationParams(
         allowsInlineMediaPlayback: true,
         mediaTypesRequiringUserAction: const <PlaybackMediaTypes>{},
-        // 📴 (٢٨ أكتوبر) قيد النطاقات المربوطة (limitsNavigationsToAppBoundDomains + WKAppBoundDomains) أُزيل من هذا البناء:
-        // يمنع أي صفحة من نطاق آخر داخل الغلاف ولم يُجرَّب على جهاز. الموقع يتحدّث بلا عامل خدمة (مجرَّب) — يُعاد مع تجربة على آيفون.
+        // 📴 (فارس ٢٩ أكتوبر: «أبي التطبيق يشتغل حتى بدون إنترنت») WKWebView لا يشغّل عامل الخدمة (sw.js) إلا لتطبيقٍ
+        // يعلن نطاقاته المربوطة (WKAppBoundDomains في Info.plist + هذا القيد). بلاه: لا فتح بلا نت، وكل فتحٍ ينزّل app.html (١٫٤ م.ب).
+        // القيد يمنع فتح أي نطاقٍ آخر داخل الغلاف — فتلك الروابط تُفتح في تطبيقها (_external في onNavigationRequest).
+        limitsNavigationsToAppBoundDomains: true,
       );
     } else {
       params = const PlatformWebViewControllerCreationParams();
@@ -453,7 +463,7 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
     }
     _web
       ..setJavaScriptMode(JavaScriptMode.unrestricted)
-      ..setBackgroundColor(const Color(0xFFF7EFE9)) // خلفية شاطر — لا وميض أبيض
+      ..setBackgroundColor(const Color(0xFFF4F7FC)) // أرضية التطبيق (theme_pomo) — لا وميض أبيض
       ..addJavaScriptChannel('ShaterErr',
           onMessageReceived: (m) => setState(() => _jsErr = m.message))
       // جسر التسميع اللحظي: الموقع يرسل start/stop ونحن نبث النتائج الجزئية له
@@ -485,21 +495,47 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
         }
       })
       ..setNavigationDelegate(NavigationDelegate(
+        // روابط خارج نطاقنا (wa.me · المتاجر…) تُفتح في تطبيقها: داخل الغلاف تُمنع على iOS (النطاقات المربوطة) ولا تصلح على أندرويد
+        onNavigationRequest: (req) {
+          final u = Uri.tryParse(req.url);
+          if (u == null || !(u.scheme == 'http' || u.scheme == 'https') || kAppHosts.contains(u.host)) {
+            return NavigationDecision.navigate;
+          }
+          if (req.isMainFrame) {
+            unawaited(launchUrl(u, mode: LaunchMode.externalApplication).catchError((_) => false));
+          }
+          return NavigationDecision.prevent;
+        },
+        onProgress: (p) {
+          if (mounted && _loading) setState(() => _progress = p);
+        },
         onPageStarted: (_) {
           _watchdog?.cancel();
-          _watchdog = Timer(const Duration(seconds: 25), () {
-            if (_loading && mounted) {
-              setState(() { _offline = true; _loading = false; });
+          // 📴 (٢٩ أكتوبر) الصفحة المحفوظة (عامل الخدمة) تُرسم فورًا بلا نت، لكن «اكتمال التحميل» قد يتأخر بملفٍ خارجي معلّق
+          // (شبكة متصلة بلا إنترنت) — فلا تُعرض «ما قدرنا نفتح الصفحة» فوق صفحةٍ ظاهرة: نسألها أولًا هل رُسم التطبيق.
+          _watchdog = Timer(const Duration(seconds: 12), () async {
+            if (!_loading || !mounted) return;
+            var drawn = false;
+            try {
+              final r = await _web.runJavaScriptReturningResult(
+                  "document.querySelector('.scr')?1:0");
+              drawn = r.toString() == '1';
+            } catch (_) {}
+            if (!mounted || !_loading) return;
+            if (drawn) {
+              setState(() => _loading = false);
+              _injectHooks();
+            } else {
+              _watchdog = Timer(const Duration(seconds: 13), () {
+                if (_loading && mounted) setState(() { _offline = true; _loading = false; });
+              });
             }
           });
-          setState(() { _loading = true; _offline = false; _jsErr = null; });
+          setState(() { _loading = true; _offline = false; _jsErr = null; _progress = 0; });
         },
         onPageFinished: (_) {
           _watchdog?.cancel();
-          _web.runJavaScript(_errHook);
-          _web.runJavaScript(_sttHook);
-          _web.runJavaScript(_payHook);
-          _web.runJavaScript(_notifHook);
+          _injectHooks();
           setState(() => _loading = false);
         },
         onWebResourceError: (e) {
@@ -511,6 +547,14 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
         },
       ))
       ..loadRequest(Uri.parse(kHome));
+  }
+
+  // الجسور تُحقن عند اكتمال الصفحة — أو حين نراها مرسومة قبل ذلك (ملفٌ خارجي معلّق بلا نت). كلها لا تُحقن مرتين (حارس داخلها).
+  void _injectHooks() {
+    _web.runJavaScript(_errHook);
+    _web.runJavaScript(_sttHook);
+    _web.runJavaScript(_payHook);
+    _web.runJavaScript(_notifHook);
   }
 
   @override
@@ -539,7 +583,7 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
       canPop: false,
       onPopInvokedWithResult: _onPop,
       child: Scaffold(
-      backgroundColor: const Color(0xFFF7EFE9),
+      backgroundColor: const Color(0xFFF4F7FC),
       // شاشة كاملة بلا أي شريط علوي — الموقع يمتد تحت النتش
       // (viewport-fit=cover موجود في الموقع ويتكفل بمسافات الأمان)
       body: Stack(children: [
@@ -555,10 +599,8 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
                   ),
                 ))
               : WebViewWidget(controller: _web),
-          if (_loading)
-            const Center(
-              child: CircularProgressIndicator(color: Color(0xFFFF6F1E)),
-            ),
+          // 🐱 (فارس ٢٩ أكتوبر: «انميشن في بداية التطبيق بدال مايسوي لودنق طويل») توتي وشريطٌ يمتلئ بتقدّم التحميل الفعلي
+          if (_loading) _ShaterLoading(progress: _progress),
           if (_offline)
             Container(
               color: const Color(0xFFF7EFE9),
@@ -626,6 +668,88 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
             ),
       ]),
     ),
+    );
+  }
+}
+
+// 🐱 شاشة الفتح: توتي تتمايل وشريطٌ يمتلئ بتقدّم التحميل — بنفس شاشة «نجهّز لك الجديد» في الموقع (offline_pack.js):
+// الأرضية #F4F7FC · الشريط #E9EEF7 والملء #FF6F1E · الحبر #24324B. بلا نصّ: الحركة والشكل يتكلمان.
+class _ShaterLoading extends StatefulWidget {
+  const _ShaterLoading({required this.progress});
+  final int progress;
+  @override
+  State<_ShaterLoading> createState() => _ShaterLoadingState();
+}
+
+class _ShaterLoadingState extends State<_ShaterLoading> with SingleTickerProviderStateMixin {
+  late final AnimationController _bob =
+      AnimationController(vsync: this, duration: const Duration(milliseconds: 1600))..repeat();
+
+  @override
+  void dispose() {
+    _bob.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final p = (widget.progress.clamp(6, 100)) / 100.0;
+    return Container(
+      color: const Color(0xFFF4F7FC),
+      alignment: Alignment.center,
+      child: Column(mainAxisSize: MainAxisSize.min, children: [
+        AnimatedBuilder(
+          animation: _bob,
+          builder: (_, child) {
+            final t = _bob.value;
+            final up = t < .45 ? Curves.easeOut.transform(t / .45) : Curves.easeIn.transform(1 - (t - .45) / .55);
+            return SizedBox(
+              width: 170,
+              height: 184,
+              child: Stack(alignment: Alignment.bottomCenter, children: [
+                Container(
+                  width: 96 - 26 * up,
+                  height: 14,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(36, 50, 75, .10 - .04 * up),
+                      borderRadius: const BorderRadius.all(Radius.elliptical(48, 7))),
+                ),
+                Positioned(
+                  bottom: 8 + 12 * up,
+                  child: Transform.scale(
+                    scaleX: 1 - .02 * up,
+                    scaleY: 1 + .02 * up,
+                    alignment: Alignment.bottomCenter,
+                    child: child,
+                  ),
+                ),
+              ]),
+            );
+          },
+          child: Image.asset('assets/totti.webp', width: 160, height: 160, filterQuality: FilterQuality.medium),
+        ),
+        const SizedBox(height: 18),
+        SizedBox(
+          width: 240,
+          height: 14,
+          child: ClipRRect(
+            borderRadius: BorderRadius.circular(999),
+            child: Stack(children: [
+              Container(color: const Color(0xFFE9EEF7)),
+              AnimatedFractionallySizedBox(
+                duration: const Duration(milliseconds: 300),
+                curve: Curves.easeOut,
+                alignment: AlignmentDirectional.centerStart,
+                widthFactor: p,
+                child: Container(
+                  decoration: BoxDecoration(
+                      color: const Color(0xFFFF6F1E), borderRadius: BorderRadius.circular(999)),
+                ),
+              ),
+            ]),
+          ),
+        ),
+      ]),
     );
   }
 }
