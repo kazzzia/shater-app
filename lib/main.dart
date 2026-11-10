@@ -145,25 +145,50 @@ window.ShaterSTT.stopLive=function(){window.ShaterSTT.postMessage('stop');};
   //   الموقع ⟵ {op:'set', items:[{id,at,title,body}]} ⟶ يلغي القديم ويجدول الجديد
   //   الموقع ⟵ {op:'clear'}                      ⟶ إلغاء الكل
   // «at» زمنٌ محليّ ISO بلا منطقة (2026-09-20T17:00:00) — ساعة الجهاز هي المرجع.
+
   static const String _notifHook = '''
-if(window.ShaterNotif&&!window.ShaterNotif.set){
-window.ShaterNotif.ask=function(){window.ShaterNotif.postMessage(JSON.stringify({op:'ask'}));};
-window.ShaterNotif.set=function(items){window.ShaterNotif.postMessage(JSON.stringify({op:'set',items:items||[]}));};
-window.ShaterNotif.clear=function(){window.ShaterNotif.postMessage(JSON.stringify({op:'clear'}));};
-window.ShaterNotif.native=true;
+(function(){
+var n=window.ShaterNotif;
+if(!n||n.bridgeVersion===2)return;
+var pending={},seq=0;
+window.__shNotifReply=function(r){
+ var p=pending[r.requestId];if(!p)return;
+ delete pending[r.requestId];clearTimeout(p.timer);
+ if(r.ok===false)p.reject(Error(r.error||'notification-failed'));else p.resolve(r);
+};
+function call(op,body){
+ return new Promise(function(resolve,reject){
+  var id=String(Date.now())+'-'+(++seq);
+  var timer=setTimeout(function(){delete pending[id];reject(Error('notification-timeout'));},op==='ask'?120000:20000);
+  pending[id]={resolve:resolve,reject:reject,timer:timer};
+  try{n.postMessage(JSON.stringify(Object.assign({op:op,requestId:id},body||{})));}
+  catch(e){clearTimeout(timer);delete pending[id];reject(e);}
+ });
+}
+n.ask=function(){return call('ask');};
+n.status=function(){return call('status');};
+n.set=function(items){return call('set',{items:items||[]});};
+n.clear=function(){return call('clear');};
+n.show=function(item){return call('show',{item:item});};
+n.native=true;n.bridgeVersion=2;
 try{if(window.__shNotifReady)window.__shNotifReady();}catch(_){}
-}''';
+})();
+''';
 
   final FlutterLocalNotificationsPlugin _fln = FlutterLocalNotificationsPlugin();
-  bool _notifReady = false;
+  Future<void>? _notifInitPending;
+  Future<void> _notifQueue = Future<void>.value();
 
-  Future<void> _notifInit() async {
-    if (_notifReady) return;
+  Future<void> _notifInit() {
+    return _notifInitPending ??= _initNotifications().catchError((Object error) {
+      _notifInitPending = null;
+      throw error;
+    });
+  }
+
+  Future<void> _initNotifications() async {
     tzdata.initializeTimeZones();
-    // ساعة الرياض هي ساعة أهلنا؛ ولو كان الجهاز في بلدٍ آخر فساعته أصدق له.
-    try {
-      tz.setLocalLocation(tz.getLocation('Asia/Riyadh'));
-    } catch (_) {}
+    tz.setLocalLocation(tz.getLocation('Asia/Riyadh'));
     await _fln.initialize(const InitializationSettings(
       android: AndroidInitializationSettings('@mipmap/ic_launcher'),
       iOS: DarwinInitializationSettings(
@@ -171,22 +196,34 @@ try{if(window.__shNotifReady)window.__shNotifReady();}catch(_){}
           requestBadgePermission: false,
           requestSoundPermission: false),
     ));
-    _notifReady = true;
   }
 
-  Future<void> _notifAsk() async {
+  Future<bool> _notifAllowed() async {
     await _notifInit();
-    try {
-      if (Platform.isIOS) {
-        await _fln
-            .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
-            ?.requestPermissions(alert: true, badge: true, sound: true);
-      } else {
-        await _fln
-            .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
-            ?.requestNotificationsPermission();
-      }
-    } catch (_) {}
+    if (Platform.isIOS) {
+      final p = await _fln
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          ?.checkPermissions();
+      return p?.isEnabled ?? false;
+    }
+    return await _fln
+        .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+        ?.areNotificationsEnabled() ?? false;
+  }
+
+  Future<Map<String, dynamic>> _notifAsk() async {
+    await _notifInit();
+    bool? allowed;
+    if (Platform.isIOS) {
+      allowed = await _fln
+          .resolvePlatformSpecificImplementation<IOSFlutterLocalNotificationsPlugin>()
+          ?.requestPermissions(alert: true, badge: true, sound: true);
+    } else {
+      allowed = await _fln
+          .resolvePlatformSpecificImplementation<AndroidFlutterLocalNotificationsPlugin>()
+          ?.requestNotificationsPermission();
+    }
+    return {'permission': allowed == true ? 'granted' : 'denied'};
   }
 
   static const NotificationDetails _notifStyle = NotificationDetails(
@@ -196,31 +233,73 @@ try{if(window.__shNotifReady)window.__shNotifReady();}catch(_){}
     iOS: DarwinNotificationDetails(),
   );
 
-  Future<void> _notifSet(List<dynamic> items) async {
+  Future<Map<String, dynamic>> _notifSet(List<dynamic> items) async {
     await _notifInit();
-    try { await _fln.cancelAll(); } catch (_) {}
+    if (!await _notifAllowed()) throw StateError('notification-permission-denied');
+    await _fln.cancelAll();
     final now = DateTime.now();
-    for (final raw in items) {
+    final ids = <int>{};
+    var requested = 0;
+    for (final raw in items.take(48)) {
       if (raw is! Map) continue;
       final at = DateTime.tryParse('${raw['at']}');
-      if (at == null || !at.isAfter(now)) continue;   // ماضٍ: لا يُجدول
-      final id = int.tryParse('${raw['id']}') ?? at.millisecondsSinceEpoch ~/ 60000 % 100000;
-      try {
-        await _fln.zonedSchedule(
-          id,
-          '${raw['title'] ?? 'شطارة'}',
-          '${raw['body'] ?? ''}',
-          tz.TZDateTime.from(at, tz.local),
-          _notifStyle,
-          // غير مضبوط بالثانية عمدًا: الضبط الدقيق يتطلب إذن SCHEDULE_EXACT_ALARM
-          // وتبرّره لجوجل، وتذكيرٌ مذاكرةٍ لا يستحق ذلك.
-          androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
-          // الزمن المرسَل زمنٌ محليّ مطلق (لا جدار ساعة متكرّر) — فهذا هو التفسير الصحيح
-          uiLocalNotificationDateInterpretation:
-              UILocalNotificationDateInterpretation.absoluteTime,
-        );
-      } catch (_) {}
+      if (at == null || !at.isAfter(now)) continue;
+      final id = int.tryParse('${raw['id']}');
+      if (id == null || id < 1 || id > 100000 || !ids.add(id)) {
+        throw StateError('notification-invalid-id');
+      }
+      requested++;
+      await _fln.zonedSchedule(
+        id, '${raw['title'] ?? 'شطارة'}', '${raw['body'] ?? ''}',
+        tz.TZDateTime.from(at, tz.local), _notifStyle,
+        androidScheduleMode: AndroidScheduleMode.inexactAllowWhileIdle,
+        uiLocalNotificationDateInterpretation: UILocalNotificationDateInterpretation.absoluteTime,
+      );
     }
+    final pending = await _fln.pendingNotificationRequests();
+    final confirmed = pending.where((p) => ids.contains(p.id)).length;
+    if (confirmed != requested) throw StateError('notification-schedule-incomplete');
+    return {'permission': 'granted', 'scheduled': confirmed};
+  }
+
+  Future<void> _notifRespond(Map<String, dynamic> o) async {
+    Map<String, dynamic> result;
+    try {
+      switch (o['op']) {
+        case 'ask':
+          result = await _notifAsk();
+          break;
+        case 'status':
+          result = {'permission': await _notifAllowed() ? 'granted' : 'denied',
+                    'scheduled': (await _fln.pendingNotificationRequests()).length};
+          break;
+        case 'set':
+          result = await _notifSet((o['items'] as List?) ?? const []);
+          break;
+        case 'clear':
+          await _notifInit();
+          await _fln.cancelAll();
+          result = {'scheduled': 0};
+          break;
+        case 'show':
+          if (!await _notifAllowed()) throw StateError('notification-permission-denied');
+          final item = o['item'] as Map? ?? const {};
+          await _fln.show(100001, '${item['title'] ?? 'شطارة'}',
+              '${item['body'] ?? ''}', _notifStyle);
+          result = {};
+          break;
+        default:
+          throw StateError('notification-unknown-operation');
+      }
+      result['ok'] = true;
+    } catch (_) {
+      result = {'ok': false, 'error': 'notification-operation-failed'};
+    }
+    result['requestId'] = o['requestId'];
+    if (!mounted || o['requestId'] == null) return;
+    try {
+      await _web.runJavaScript('window.__shNotifReply && window.__shNotifReply(${jsonEncode(result)});');
+    } catch (_) {}
   }
 
   // ═══ 💳 جسر الدفع (ShaterPay) ═══
@@ -484,11 +563,7 @@ try{if(window.__shPayReady)window.__shPayReady();}catch(_){}
       ..addJavaScriptChannel('ShaterNotif', onMessageReceived: (m) {
         Map<String, dynamic> o;
         try { o = jsonDecode(m.message) as Map<String, dynamic>; } catch (_) { return; }
-        switch (o['op']) {
-          case 'ask': _notifAsk(); break;
-          case 'set': _notifSet((o['items'] as List?) ?? const []); break;
-          case 'clear': _notifInit().then((_) => _fln.cancelAll()); break;
-        }
+        _notifQueue = _notifQueue.then((_) => _notifRespond(o));
       })
       // 💳 جسر دفع المتجر
       ..addJavaScriptChannel('ShaterPay', onMessageReceived: (m) {
